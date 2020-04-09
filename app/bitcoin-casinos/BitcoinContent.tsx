@@ -7,6 +7,7 @@ import Faq from "../../components/faq";
 import monthYear from "../../components/functions/monthYear";
 import ProsCons from "../../components/ProsCons";
 import FaqJsonLD from "../../components/FaqJsonLDX";
+import ProSchema from "@/components/ProJsonLDX";
 import CasinoDisplayList from "../../components/CasinoDisplayList";
 import MobileJump from "../components/MobileJump";
 import CasinoCard from "@/components/CasinoCard";
@@ -22,7 +23,7 @@ export default function BitcoinContent(props) {
     ],
   };
   const cardData = {
-    title: "Best US Casino",
+    title: "Best US Bitcoin Casino",
     bonusOneTittle: "200% First Deposit Bonus",
     bonusOneValueOne: "Deposit $500",
     bonusOneValueTwo: "Play with $1000",
@@ -33,7 +34,7 @@ export default function BitcoinContent(props) {
   const author = "AFC Chris";
   const reviewDate = "";
   const authorText =
-    "Chris Started working on Allfreechips in July of 2004, After many frustraiting years of learning how to make a webpage we now have the current site!  Chris started by being a player first, and loved online gaming so much he created the Allfreechips Community.";
+    "Chris Started working on Allfreechips in July of 2004, After many frustrating years of learning how to make a webpage we now have the current site!  Chris started by being a player first, and loved online gaming so much he created the Allfreechips Community.";
   const authorData = { author, authorText };
   const bdata = props.data;
   const prosCons = {
@@ -98,7 +99,7 @@ export default function BitcoinContent(props) {
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
       <FaqJsonLD data = {faq} />
-    
+      <ProSchema prosCons = {prosCons} name = "Bitcoin Casinos" product ="Casinos with Bitcoin" />
 
     <section className="py-8  px-6">
       <div className="container mx-auto">

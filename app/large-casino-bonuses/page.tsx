@@ -1,8 +1,6 @@
 import React from "react";
 import Faq from "@/components/faq";
 import BonusFilter from "@/components/functions/bonusfilter";
-import { FaBalanceScale, FaHandsWash, FaGifts, FaGift } from "react-icons/fa";
-import { TbBeach } from "react-icons/tb";
 import CasinoDisplayList from "@/components/CasinoDisplayList";
 import Link from "next/link";
 import { CgMenuLeft } from "react-icons/cg";
@@ -14,28 +12,15 @@ import FaqJsonLD from "@/components/FaqJsonLDX";
 import prisma from "@/client";
 import MobileJump from "../components/MobileJump";
 import { Metadata } from "next";
+import BonusSlider from "@/components/BonusSlider";
+import { FaArrowCircleRight } from "react-icons/fa";
+import ProSchema from "@/components/ProJsonLDX";
 
-import pgHelpers from "kysely/helpers/postgres";
+
+
 //added to synch
 async function getProps({ params }) {
-  // const top20Casinos = await db
-  //   .selectFrom("casino_p_casinos")
-  //   .leftJoin("casino_p_bonus", "casino_p_casinos.id", "casino_p_bonus.parent")
-  //   .where("approved", "=", 1)
-  //   .where("rogue", "=", 0)
-  //   .having(db.fn.count("casino_p_bonus.id"), ">=", 1)
-  //   .orderBy(db.fn.max("casino_p_bonus.deposit"))
-  //   .limit(20)
-  //   .select((eb) => [
-  //     "id",
-  //     "clean_name",
-  //     "casino",
-  //     "hot",
-  //     "new",
-  //     "button",
-  //     pgHelpers.jsonArrayFrom(eb.selectFrom("")),
-  //   ])
-  //   .execute();
+ 
   const data = await prisma.casino_p_casinos.findMany({
     where: {
       approved: 1,
@@ -54,6 +39,11 @@ async function getProps({ params }) {
       bonuses: {
         orderBy: { deposit: "desc" },
       },
+      casino_ratings: {
+        select: {
+          rating: true
+        }
+      }
     },
     take: 45,
   });
@@ -129,11 +119,11 @@ export default async function PageOut(params) {
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
       <FaqJsonLD data={faq} />
-
+      <ProSchema prosCons = {prosCons} name = "Big Bonuses" product ="Casinos with Large Bonuses" />
       <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">
-            TOP 400% and greater casinos For {monthYear()}
+            TOP 400% and greater casinos bonuses for {monthYear()}
           </h1>
           <div className="flex flex-col py-4">
             <span className="">
@@ -194,10 +184,14 @@ export default async function PageOut(params) {
         </div>
         <div className="lg:w-3/4  text-lg md:text-xl font-medium">
           <div className="flex flex-col rounded-lg">
-            <p className="py-4 font-bold my-4 md:my-8">
+          <p className="py-4 font-bold my-4 md:my-8">
+              Hot Bonuses Right Now
+            </p>
+            <BonusSlider FaArrowCircleRight = {<FaArrowCircleRight className="mx-2" />} casinos={bdata} />
+            <p className="py-4 font-bold my-4 mdmy-8">
               Complete Large Casino Bonus List
             </p>
-            <CasinoDisplayList data={bdata} />
+            <CasinoDisplayList  data={bdata} />
           </div>
 
           <div>

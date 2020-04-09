@@ -61,7 +61,7 @@ export const authOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.JWT_SECRET,
   theme: {
-    logo: "https://afc-redux.vercel.app/logo.png", // Absolute URL to image
+    // logo: "https://afc-redux.vercel.app/logo.png", // Absolute URL to image
   },
 };
 

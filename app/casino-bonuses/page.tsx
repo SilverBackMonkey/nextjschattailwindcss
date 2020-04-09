@@ -13,7 +13,7 @@ import ProsCons from "@/components/ProsCons";
 import FaqJsonLD from "@/components/FaqJsonLDX";
 import CasinoHint from "@/components/CasinoHint";
 import TimeForNewCasino from "@/components/TimeForNewCasino";
-import Notice from "@/components/Notice";
+import ProSchema from "@/components/ProJsonLDX";
 import prisma from "@/client";
 import MobileJump from "../components/MobileJump";
 import { Metadata } from "next";
@@ -49,8 +49,14 @@ async function getProps({ params }) {
       bonuses: {
         orderBy: [{ deposit: "desc" }],
       },
+      casino_ratings: {
+        select: {
+          rating: true
+        }
+      }
     },
-    orderBy: [{ hot: "desc" }, { new: "desc" }],
+    orderBy: [{ id: "desc" } , {hot: "desc" }, { new: "desc" }],
+    take: 5,
   });
 
   const bdata: any[] = data.filter((p) => p.bonuses.length > 0);
@@ -60,6 +66,9 @@ async function getProps({ params }) {
 
 export default async function PageOut({ params }) {
   const props = await getProps({ params });
+  const hint_text =
+    "Online casino that offer bonuses are fun and can lead to playing with large amounts of money you don't actually deposit. Be sure to note how many times you need to bet this amount before your allowed to cash out, do not be surprised by the casino terms!";
+  const hint_title = "Casino Bonus Quick Info";
   const prosCons = {
     pros: [
       {
@@ -71,7 +80,7 @@ export default async function PageOut({ params }) {
         content:
           "We love online casino bonuses so these are not all, but what we believe are the best for reliability, playability, game selection and of course payouts.",
       },
-    ], 
+    ],
     cons: [
       {
         title: "Strings Attached",
@@ -88,7 +97,7 @@ export default async function PageOut({ params }) {
         "Allfreechips deals with both players and casino operators to insure there are only what we believe are reliable casinos, this starting page of casino bonuses is the select list.",
     },
     {
-      question: "WIll I win with these casino bonuses?",
+      question: "Will I win with these casino bonuses?",
       answer:
         "To be honest casino bonuses are a bit rigged, yes it adds a ton of play time and extra cash but its really hard to beat the odds of meeting the play-though to cash out.  It has been done hundreds of times and I personally cashed out over 200K on a bonus.",
     },
@@ -106,12 +115,13 @@ export default async function PageOut({ params }) {
     "Chris Started working on Allfreechips in July of 2004, After many  frustrating years of learning how to make a webpage we now have the current site!  Chris started by being a player first, and loved online gaming so much he created the Allfreechips Community.";
   const authorData = { author, authorText };
   const links = [
-    { link: "#ProsCons", text: `Casino BOnus Pros and Cons` },
+    { link: "#ProsCons", text: `Casino Bonus Pros and Cons` },
     { link: "#faq", text: `Casino Bonus FAQs` },
   ];
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
       <FaqJsonLD data={faq} />
+      <ProSchema prosCons = {prosCons} name = "Casino Bonuses" product ="Different Casino Bonuses" />
       <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">
@@ -207,18 +217,15 @@ export default async function PageOut({ params }) {
         <div className="lg:w-3/4  text-lg lg:text-xl font-medium">
           <div className="flex flex-col rounded-lg">
             <p className="py-4 font-bold my-4 md:my-8">
-              Complete USA Casino guide
+              Latest online casino bonuses
             </p>
             <CasinoDisplayList data={bdata} />
           </div>
-          <CasinoHint />
+          <CasinoHint text= {hint_text} title={hint_title} />
           <TimeForNewCasino />
-          <Notice />
+          
 
           <div>
-            <div className="text-lg font-normal">
-              Items of interest on casino promotions
-            </div>
             <ProsCons data={prosCons} />
             <Faq data={faq} />
             <Author data={authorData} />

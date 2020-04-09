@@ -56,14 +56,12 @@ const ResultItem: React.FC<props> = ({ type, item }) => {
                 {item?.meta && item?.meta[0]?.title && (
                   <h2
                     className="text-base font-medium text-gray-800 md:text-lg"
-                    title="New York"
                   >
                     {item?.meta[0]?.title}
                   </h2>
                 )}
                 <p
                   className="mt-2 line-clamp-1 text-sm text-gray-800"
-                  title="New York, NY 10004, United States"
                 >
                   {item[name]}
                 </p>
@@ -98,14 +96,12 @@ const ResultItem: React.FC<props> = ({ type, item }) => {
                 {item?.meta && item?.meta[0]?.title && (
                   <h2
                     className="text-base font-medium text-gray-800 md:text-lg"
-                    title="New York"
                   >
                     {item?.meta[0]?.title}
                   </h2>
                 )}
                 <p
                   className="mt-2 line-clamp-1 text-sm text-gray-800"
-                  title="New York, NY 10004, United States"
                 >
                   {item[name]}
                 </p>

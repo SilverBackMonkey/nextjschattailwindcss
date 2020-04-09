@@ -8,6 +8,7 @@ import { addUsername, getLoginUser, updateUser } from "../lib/UserFetch";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import prisma from "@/client";
+import { revalidatePath } from "next/cache";
 export async function generateMetadata({ params }): Promise<Metadata> {
   const Title =
     monthYear() + " Current online gambling guide list";
@@ -24,13 +25,28 @@ export default async function Page() {
     
   const session = await getServerSession(authOptions);
   //@ts-expect-error
-  const user: any = session?.user;
+  const userEmail: string = session?.user?.email;
 
-  if(user && user.email && (!user?.name || user?.name === '')){
-    updateUser();    
+  let user = await prisma.user.findFirst({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+      afcRewards: true, 
+    },
+    where:{
+        email: userEmail
+    }
+  });
+
+  if (!userEmail) {
+    user = null;
   }
-  if(!user) {
-    
+
+  if(user && user.email && (!user.name || user.name === '')){
+    const name = await updateUser();
+    if (name && name.length > 0) revalidatePath('/myprofile');
   }
 
   return (

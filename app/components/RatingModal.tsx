@@ -4,7 +4,6 @@ import SelectRating from "./SelectRating";
 
 interface Props {
   show: boolean,
-  authorId: any,
   type: number,
   parentId: number,
   setShow: (boolean) => void;
@@ -13,7 +12,6 @@ interface Props {
 
 const RatingModal: React.FC<Props> = ({
   show,
-  authorId,
   type,
   parentId,
   setShow,

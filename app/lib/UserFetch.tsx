@@ -35,9 +35,7 @@ export async function updateUser() {
     ////@ts-expect-error
     const userEmail: string = session?.user?.email;
     const username: any = session?.user?.name;
-    // const userEmail = 'lionjfkdjka@gmail.com';
-    // const username = null;
-
+    
     // when username does not exist though user login
     if(userEmail && (!username || username === '')) {
       const originUsers = await prisma.vb_user.findMany({

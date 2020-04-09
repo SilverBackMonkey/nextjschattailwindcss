@@ -36,3 +36,6 @@ env
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+digital ocean.session.sql
+
+/prisma/generated/

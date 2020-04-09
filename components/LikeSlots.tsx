@@ -1,27 +1,28 @@
-"use client";
-import React, { useRef, useState } from "react";
-import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
-import { AiFillExclamationCircle } from "react-icons/ai";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import { _avg } from "@/app/lib/Aggregation";
-import data from '@emoji-mart/data';
-function LikeSlots(props) {
-  const [games, setGames] = useState<any[]>(props.data.gameList);
-  const [swId, setSwId] = useState<any[]>([]);
-  const pageNumber = useRef<number>(1);
-  const casino = props.data.casinoData?.casinoname;
-  const casinoId = props.data.casinoData?.casinoid;
+import { BsFillStarFill } from "react-icons/bs";
+import { VscStarEmpty } from "react-icons/vsc";
+import { AiFillExclamationCircle } from "react-icons/ai";
+import { textWrap } from "@/app/lib/TextWrap";
+
+const LikeSlots = ({data, loadMoreData}) => {
+
+  const games = data.games;
+  
+  const casino = data.casinoData?.casinoname;
+  const casinoId = data.casinoData?.casinoid;
   const bonusLink =
     "https://www.allfreechips.com/play_casino" + casinoId + ".html";
 
-  const ratings = games.map((g, index) => {
+  const ratings = games?.map((g, index) => {
     return _avg(g?.game_ratings);
   }); 
+  
 
   return (
     <>
-      {games?.map((g, index) => (
+      {games?.length > 0 && games?.map((g, index) => (
         <div
         key={g.game_id}
           className="flex flex-col rounded-2xl md:flex-row border-2 items-center p-6 my-6 md:px-20 justify-between"
@@ -38,34 +39,35 @@ function LikeSlots(props) {
             />
           </span>
           <div className="flex flex-col items-center">
-            <h5 className="my-4">{g.software_name}</h5>
-            <h3 className="text-4xl">{g.gamename}</h3>
+            <h5 className="my-4">{g.software.software_name}</h5>
+            <h3 className="text-4xl">{textWrap(g.game_name, 15)}</h3>
             <div className="flex md:flex-col items-center justify-between">
               <div className="flex items-center space-x-1 my-4">
               {[1, 2, 3, 4, 5].map((value) => (
                 <div key={value}>
                     {ratings[index] >= value && (
-                      <BsStarFill />
+                      <BsFillStarFill />
                     )}
                     {ratings[index] < value && ratings[index] > (value - 0.5) && (
-                      <BsStarHalf />
+                      <BsFillStarFill />
                     )}
                     {ratings[index] < value && (
-                      <BsStar />
+                      <VscStarEmpty />
                     )}
                 </div>
                 ))}
                 <p className="">{ratings[index]?.toFixed(2)}</p>
               </div>
               <div className="flex items-center space-x-3">
-                <p>
                   <Link
                     href={`../slot/${encodeURIComponent(g.game_clean_name)}`}
+                    type="button"
+                    className="rounded-full bg-sky-700 text-white dark:bg-white dark:text-black py-2 px-4 my-6"
                   >
-                    {g.game_name} Review
+                    Slot Review
+                    {/* <span key={index} className="word" style={{color: "#21669e",
+                  textShadow: "2px 2px #444444, 1px 1px 4px black, 0 0 4px black"}}>Slot Review</span> */}
                   </Link>
-                </p>
-                <AiFillExclamationCircle />
               </div>
             </div>
           </div>
@@ -102,29 +104,17 @@ function LikeSlots(props) {
           </div>
         </div>
       ))}
-      <p
-        onClick={() => {
-          fetch(`/api/recentSlots/?pageNumber=${pageNumber.current + 1}&swId=${swId}`, {
-            next: {
-              revalidate: 3,
-            },
-          })
-            .then((res) => {
-              console.log(res.json())
-              if (!res.ok) {
-                throw res;
-              }
-              return res.json();
-            })
-            .then((res) => {
-              setGames([...games, ...res.data]);
-              pageNumber.current = pageNumber.current + 1;
-            })
-            .catch((err) => {});
-        }} 
-        className="text-center my-8 cursor-pointer"
-        >Show More</p>
-    </>
+      {parseInt(data?.gameTotalCount) > games?.length && 
+      <form action={loadMoreData} className="text-center">
+        <input type="hidden" name="pageNumber" value={data?.pageNum} /> 
+        <button
+          type="submit" 
+          className="text-center my-8 cursor-pointer"
+          >Show More</button>
+      </form>
+      }
+      </>
   );
 }
+
 export default LikeSlots;

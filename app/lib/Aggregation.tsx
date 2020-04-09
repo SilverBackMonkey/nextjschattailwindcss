@@ -6,7 +6,6 @@ export function _avg (input: any) {
         })
         return result / input.length;
     }
-
     else
         return 0;
 }

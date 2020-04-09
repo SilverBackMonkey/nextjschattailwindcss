@@ -12,6 +12,7 @@ import CasinoDisplayList from "@/components/CasinoDisplayList";
 import prisma from "@/client";
 import MobileJump from "../components/MobileJump";
 import { Metadata } from "next";
+import ProSchema from "@/components/ProJsonLDX";
 async function getProps({ params }) {
   const data = await prisma.casino_p_casinos.findMany({
     where: {
@@ -29,6 +30,11 @@ async function getProps({ params }) {
       bonuses: {
         orderBy: [{ nodeposit: "desc" }, { deposit: "desc" }],
       },
+      casino_ratings: {
+        select: {
+          rating: true
+        }
+      }
     },
     orderBy: [{ id: "desc" }],
     take: 30,
@@ -103,7 +109,7 @@ export default async function PageOut({ params }) {
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
       <FaqJsonLD data={faq} />
-     
+      <ProSchema prosCons = {prosCons} name = "New Casinos" product ="New Casino List" />
       <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">

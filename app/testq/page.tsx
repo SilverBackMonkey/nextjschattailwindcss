@@ -21,7 +21,7 @@ async function getProps({ params }) {
     where: {
       casino: {
         contains: "miami"
-    },
+      },
       approved: 1,
       rogue: 0,
       bonuses: {

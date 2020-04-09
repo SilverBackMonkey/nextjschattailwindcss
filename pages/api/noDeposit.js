@@ -26,6 +26,11 @@ export default async function handler(req, res) {
         bonuses: {
           orderBy: [{ nodeposit: "desc" }, { deposit: "desc" }],
         },
+        casino_ratings:{
+          select:{
+            rating: true
+          }
+        }
       },
       orderBy: [{ hot: "desc" }, { new: "desc" }],
       take: 5,

@@ -1,4 +1,6 @@
 import prisma from '@/client';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { getServerSession } from 'next-auth';
 import React from 'react';
 
 export async function  getRating(type, parent, email) {
@@ -38,72 +40,69 @@ export async function  getRating(type, parent, email) {
   }
 }
 
-export async function  setRating(rating, type, parent, authorId) {
+export async function  setRating(rating, type, parent) {
     "use server";
-    try{
-      // const newRating = await prisma.rating.create({
-      //   select: {
-      //       id: true,
-      //       rating: true,
-      //       type: true,
-      //       parentId: true,
-      //       author: { select: { image: true, name: true, id: true, email: true } },
-      //   },
-      //   data:{
-      //     type:type,
-      //     parentId:parent,
-      //     author: { connect: { id: authorId } },
-      //     rating:rating
-      //   }
-      // })
+    
+    const session: any = await getServerSession(authOptions);
+    const userEmail = session?.user?.email;
 
-      const parentId = type == 1 ? "casinoId": "gameId";
-      if(type==1) {
-        const result = await prisma.rating.create({
-          select: {
-            id: true,
-            rating: true,
-            type: true,
-            parentId: true,
-            casino_ratings: {select: {id: true, clean_name: true}},
-            author: { select: { image: true, name: true, id: true, email: true } },
-          },
-          data: {
-            casino_ratings: {connect: {id: parent}},
-            type:type,
-            parentId:parent,
-            author: { connect: { id: authorId } },
-            rating:rating
-          }
-        })
-
-        return result;
+    let user = await prisma.user.findFirst({
+      where:{
+          email: userEmail
       }
-      if(type==2) {
-        const result = await prisma.rating.create({
-          select: {
-            id: true,
-            rating: true,
-            type: true,
-            parentId: true,
-            author: { select: { image: true, name: true, id: true, email: true } },
-          },
-          data: {
-            type:type,
-            parentId:parent,
-            game_ratings: {connect: {game_id: parent}},
-            author: { connect: { id: authorId } },
-            rating:rating
-          }
-        })
+    });
+    if (!userEmail || userEmail == "" || user?.role == 3) {
+      user = null;
+    }
+    if(user)
+      try{
+        const parentId = type == 1 ? "casinoId": "gameId";
+        if(type==1) {
+          const result = await prisma.rating.create({
+            select: {
+              id: true,
+              rating: true,
+              type: true,
+              parentId: true,
+              casino_ratings: {select: {id: true, clean_name: true}},
+              author: { select: { image: true, name: true, id: true, email: true } },
+            },
+            data: {
+              casino_ratings: {connect: {id: parent}},
+              type:type,
+              parentId:parent,
+              author: { connect: { id: user?.id } },
+              rating:rating
+            }
+          })
 
-        return result;
+          return result;
+        }
+        if(type==2) {
+          const result = await prisma.rating.create({
+            select: {
+              id: true,
+              rating: true,
+              type: true,
+              parentId: true,
+              author: { select: { image: true, name: true, id: true, email: true } },
+            },
+            data: {
+              type:type,
+              parentId:parent,
+              game_ratings: {connect: {game_id: parent}},
+              author: { connect: { id: user?.id } },
+              rating:rating
+            }
+          })
+
+          return result;
+        }
+
       }
-
-    }
-    catch(err){
-      console.log(err);
-    }
+      catch(err){
+        console.log(err);
+      }
   }
   
   

@@ -7,21 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ChatMessage {
+model casino_filter_condition {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
+  authorId  String
+  condition String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model ChatMessage {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
   message   String
   authorId  String
-  like      Int      @default(0)
-
-  author User @relation(fields: [authorId], references: [id])
+  like      Int       @default(0)
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes     tb_pbot[]
 }
 
 model tb_pbot {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
+  id        String      @id @default(cuid())
+  createdAt DateTime    @default(now())
   messageId String
   authorId  String
+  author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
 }
 
 model Post {
@@ -34,21 +44,42 @@ model Post {
   vote_up   Int?
   vote_down Int?
   added     String?
-  author    User?      @relation(fields: [authorId], references: [id])
   comments  Comments[]
+  author    User?      @relation(fields: [authorId], references: [id])
 }
 
 model Comments {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  type      Int?
-  parentId    String?
-  postId    String?
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  author    User?    @relation(fields: [authorId], references: [id])
-  posts     Post?    @relation(fields: [postId], references: [id])
+  id              String            @id @default(cuid())
+  createdAt       DateTime          @default(now())
+  type            Int?
+  parentId        Int?
+  postId          String?
+  content         String?
+  published       Boolean           @default(false)
+  authorId        String
+  casinoId        Int?
+  gameId          Int?
+  newsId          Int?
+  author          User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  casino_comments casino_p_casinos? @relation(fields: [casinoId], references: [id], onDelete: Cascade)
+  game_comments   casino_p_games?   @relation(fields: [gameId], references: [game_id], onDelete: Cascade)
+  news            News?             @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  posts           Post?             @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Rating {
+  id             String            @id @default(cuid())
+  createdAt      DateTime          @default(now())
+  type           Int?
+  parentId       Int?
+  rating         Int?
+  published      Boolean           @default(false)
+  authorId       String
+  casinoId       Int?
+  gameId         Int?
+  author         User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  casino_ratings casino_p_casinos? @relation(fields: [casinoId], references: [id], onDelete: Cascade)
+  game_ratings   casino_p_games?   @relation(fields: [gameId], references: [game_id], onDelete: Cascade)
 }
 
 model Account {
@@ -83,27 +114,56 @@ model Session {
 }
 
 model User {
-  id            String            @id @default(cuid())
-  name          String?
-  email         String?           @unique
-  emailVerified DateTime?         @map("email_verified")
-  image         String?
-  createdAt     DateTime          @default(now()) @map("created_at")
-  updatedAt     DateTime          @updatedAt @map("updated_at")
-  user_lvl      String?
-  isAdmin       Boolean           @default(false)
-  role          Int               @default(1)
-  afcRewards    Int               @default(0)
-  posts         Post[]
-  accounts      Account[]
-  sessions      Session[]
-  scratchCard   ScratchCardGame[]
-  comments      Comments[]
-
-  chatMessages     ChatMessage[]
-  ScratchCardAward ScratchCardAward[]
+  id                       String                    @id @default(cuid())
+  name                     String?
+  email                    String?                   @unique
+  emailVerified            DateTime?                 @map("email_verified")
+  image                    String?
+  createdAt                DateTime                  @default(now()) @map("created_at")
+  updatedAt                DateTime                  @updatedAt @map("updated_at")
+  user_lvl                 String?
+  isAdmin                  Boolean?                  @default(false)
+  role                     Int?                      @default(1)
+  afcRewards               Int                       @default(0)
+  chatMessages             ChatMessage[]
+  comments                 Comments[]
+  news                     News[]
+  posts                    Post[]
+  ratings                  Rating[]
+  ScratchCardAward         ScratchCardAward[]
+  scratchCard              ScratchCardGame[]
+  accounts                 Account[]
+  casino_filter_conditions casino_filter_condition[]
+  sessions                 Session[]
+  tb_pbots                 tb_pbot[]
 
   @@map("users")
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  value String
+  news  News[]
+}
+
+model News {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String
+  image       String
+  categoryId  Int
+  authorId    String
+  createdAt   DateTime   @default(now()) @map("created_at")
+  comments    Comments[]
+  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category    Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model vb_user {
+  userid   String  @id @default(cuid())
+  username String?
+  email    String? @unique
+  user_afc Int     @default(0)
 }
 
 model ScratchCardGame {
@@ -113,10 +173,10 @@ model ScratchCardGame {
   prize            String?
   chipset          String[]
   freePlay         Boolean            @default(true)
-  user             User               @relation(fields: [user_id], references: [id])
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @updatedAt @map("updated_at")
   ScratchCardAward ScratchCardAward[]
+  user             User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model ScratchCardAward {
@@ -124,19 +184,11 @@ model ScratchCardAward {
   awarded   Boolean
   usdAmount Int
   game_id   Int
-  game      ScratchCardGame @relation(fields: [game_id], references: [id])
   user_id   String
-  user      User            @relation(fields: [user_id], references: [id])
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-}
-
-model AfcDetails {
-  id         String  @id @default(cuid())
-  name       String?
-  email      String? @unique
-  adcRewards Int?
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+  game      ScratchCardGame @relation(fields: [game_id], references: [id])
+  user      User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -156,41 +208,47 @@ model casino_p_bonus_lang {
 }
 
 model casino_p_casinos {
-  id             Int                             @id @default(autoincrement())
-  aff_id         Int?
-  casino         String?
-  type           String?
-  url            String?
-  software       String?
-  approved       Int?
-  updated        String?
-  hot            Int?
-  new            Int?
-  rogue          Int?
-  button         String?
-  blurb          String?
-  softwareid     Int
-  telephone      String?
-  contactemail   String?
-  livechat       Int?
-  mobile         Int?
-  homepageimage  String?
-  livegames      Int?
-  clean_name     String?
-  currencies     String?
-  datialsupdate  Int?
-  currency_val   Int?
-  review_overall Int?
-  banklist       casino_p_bank_connect[]
-  bonuses        casino_p_bonus[]
-  review         casino_p_descriptions_casinos[]
-  jurisdictions  casino_p_jurisdictions[]
-  meta           casino_p_meta_casinos[]
-  casino_geo     casino_p_restrictions[]
-  softwares      casino_p_software_link[]
-  casino_faq     casino_p_casino_faq[]
-  casino_pros    casino_p_casino_pros[]
-  casino_cons    casino_p_casino_cons[]
+  id              Int                             @id @default(autoincrement())
+  aff_id          Int?
+  casino          String?
+  type            String?
+  url             String?
+  software        String?
+  approved        Int?
+  updated         String?
+  hot             Int?
+  new             Int?
+  rogue           Int?
+  button          String?
+  blurb           String?
+  softwareid      Int
+  telephone       String?
+  contactemail    String?
+  livechat        Int?
+  mobile          Int?
+  homepageimage   String?
+  livegames       Int?
+  clean_name      String?
+  currencies      String?
+  datialsupdate   Int?
+  currency_val    Int?
+  review_overall  Int?
+  nodeposit       Int?
+  freespins       Int?
+  bonus_percent   Int?
+  deposit         Int?
+  casino_comments Comments[]
+  casino_ratings  Rating[]
+  banklist        casino_p_bank_connect[]
+  bonuses         casino_p_bonus[]
+  casino_cons     casino_p_casino_cons[]
+  casino_faq      casino_p_casino_faq[]
+  casino_pros     casino_p_casino_pros[]
+  review          casino_p_descriptions_casinos[]
+  jurisdictions   casino_p_jurisdictions[]
+  meta            casino_p_meta_casinos[]
+  casino_geo      casino_p_restrictions[]
+  softwares       casino_p_software_link[]
 }
 
 model casino_p_meta_casinos {
@@ -208,7 +266,7 @@ model casino_p_meta_games {
   s_id        Int
   title       String?
   description String?
-  meta        casino_p_games @relation(fields: [s_id], references: [game_id])
+  meta        casino_p_games @relation(fields: [s_id], references: [game_id], onDelete: Cascade)
 }
 
 model casino_p_descriptions_casinos {
@@ -220,7 +278,7 @@ model casino_p_descriptions_casinos {
   type             Int?
   description_link String?
   record           String?
-  review           casino_p_casinos @relation(fields: [parent], references: [id], map: "description_casino_fk")
+  review           casino_p_casinos @relation(fields: [parent], references: [id], onDelete: Cascade, map: "description_casino_fk")
 }
 
 model casino_p_descriptions_games {
@@ -232,7 +290,7 @@ model casino_p_descriptions_games {
   type             Int?
   description_link String?
   record           String?
-  review           casino_p_games @relation(fields: [parent], references: [game_id], map: "description_game_fk")
+  review           casino_p_games @relation(fields: [parent], references: [game_id], onDelete: Cascade, map: "description_game_fk")
 }
 
 model casino_p_software {
@@ -289,14 +347,16 @@ model casino_p_games {
   game_clean_name        String?
   game_payout            String?
   game_fixed_bet         String?
-  software               casino_p_software             @relation(fields: [game_software], references: [id])
+  game_comments          Comments[]
+  game_ratings           Rating[]
   review                 casino_p_descriptions_games[]
+  software               casino_p_software             @relation(fields: [game_software], references: [id])
+  game_cons              casino_p_games_cons[]
+  game_faq               casino_p_games_faq[]
   game_images            casino_p_games_image[]
+  game_pros              casino_p_games_pros[]
   meta                   casino_p_meta_games[]
   slot_theme             casino_p_slot_details[]
-  game_faq               casino_p_games_faq[]
-  game_pros              casino_p_games_pros[]
-  game_cons              casino_p_games_cons[]
 }
 
 model casino_p_pages {
@@ -395,14 +455,14 @@ model casino_p_games_image {
   h                   Int?
   tw                  Int?
   th                  Int?
-  game_images         casino_p_games @relation(fields: [game_image_parent], references: [game_id])
+  game_images         casino_p_games @relation(fields: [game_image_parent], references: [game_id], onDelete: Cascade)
 }
 
 model casino_p_slot_details {
   id         Int            @id @default(autoincrement())
   parent     Int
   theme      String
-  slot_theme casino_p_games @relation(fields: [parent], references: [game_id])
+  slot_theme casino_p_games @relation(fields: [parent], references: [game_id], onDelete: Cascade)
 }
 
 model casino_p_restrictions {
@@ -418,7 +478,7 @@ model casino_p_games_pros {
   game      Int
   title     String
   content   String
-  game_pros casino_p_games @relation(fields: [game], references: [game_id])
+  game_pros casino_p_games @relation(fields: [game], references: [game_id], onDelete: Cascade)
 }
 
 model casino_p_games_cons {
@@ -426,7 +486,7 @@ model casino_p_games_cons {
   game      Int
   title     String
   content   String
-  game_cons casino_p_games @relation(fields: [game], references: [game_id])
+  game_cons casino_p_games @relation(fields: [game], references: [game_id], onDelete: Cascade)
 }
 
 model casino_p_games_faq {
@@ -434,7 +494,7 @@ model casino_p_games_faq {
   game     Int
   question String
   answer   String
-  game_faq casino_p_games @relation(fields: [game], references: [game_id])
+  game_faq casino_p_games @relation(fields: [game], references: [game_id], onDelete: Cascade)
 }
 
 model casino_p_casino_pros {

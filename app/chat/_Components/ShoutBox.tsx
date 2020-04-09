@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 //// @ts-expect-error
 import { lazy, useState, useEffect } from 'react';
 import { EmojiPickerIcon, SendMessageIcon } from "../_lib/ChatData";
+import OnIntervalFn from "../OnIntervalFn";
 
 const factoryEmojiPicker = () => import("./EmojiPicker");
 const EmojiPicker = lazy(factoryEmojiPicker);
@@ -102,13 +103,13 @@ const ShoutBox : React.FC<props> = ( {loading,  sendMessage}) => {
             className="mb-6" 
             //// @ts-expect-error
             action={sendMessage}>
-                <div className="bg-grey-lighter md:px-4 md:py-4 sm:px:2 sm:py-2 flex ">
+                <div className="bg-grey-lighter md:px-4 sm:px:2 flex ">
                   <div className="flex-1 md:mx-4 sm:mx-2">
                     <textarea id="message" name="message" rows={3}
                       onChange={handleInputChange}
                       value={formData.message}
                       ref={textAreaRef}
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Leave a comment..." required />
+                      className="w-full py-2 px-3 placeholder-gray-300 border border-gray-300 rounded-md text-lg focus:outline-none focus:border-current dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500" placeholder="Leave a comment..." required />
 
                   </div>
                   <div className="md:ml-2 mt-3">

@@ -92,12 +92,12 @@ const MessageList: React.FC<props> = ({user, getMessages, like, updateMessage, r
     // import MessageDeleteModal
     useEffect(() => {
         factoryDeleteModal();
-      },[showModalDelete]);
+    },[showModalDelete]);
       
     // import MessageEditModal
     useEffect(() => {
         factoryEditModal();
-      },[showEditModal]);
+    },[showEditModal]);
     
     const showModalEdit = (message:any) => {
         setMessage(message);
@@ -180,14 +180,13 @@ const MessageList: React.FC<props> = ({user, getMessages, like, updateMessage, r
                             }
                             {!message?.userImage &&
                                 <div className="relative w-12 h-12 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                                    <NoAvartar />             
+                                    <NoAvartar />
                                 </div>
                             }
                             </div>
                             <div className="flex items-center flex-1 px-4 font-bold leading-tight">
                             {message?.username} 
                             </div>
-                            
                             <p className="text-sm text-gray-600 dark:text-gray-400 ">{createdAt}</p>
                         </div>
                         

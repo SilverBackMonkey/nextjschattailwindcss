@@ -12,6 +12,7 @@ import monthYear from "@/components/functions/monthYear";
 import Author from "@/components/AboutAuthor";
 import ProsCons from "@/components/ProsCons";
 import FaqJsonLD from "@/components/FaqJsonLDX";
+import ProSchema from "@/components/ProJsonLDX";
 import prisma from "@/client";
 import MobileJump from "../components/MobileJump";
 import { Metadata } from "next";
@@ -35,6 +36,11 @@ async function getProps({ params }) {
       bonuses: {
         orderBy: [{ nodeposit: "desc" }, { deposit: "desc" }],
       },
+      casino_ratings: {
+        select: {
+          rating: true
+        }
+      }
     },
     orderBy: [{ hot: "desc" }, { new: "desc" }],
     take: 100,
@@ -115,7 +121,7 @@ export default async function PageOut(params) {
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
       <FaqJsonLD data={faq} />
-
+      <ProSchema prosCons = {prosCons} name = "Free Spin Casinos" product ="Casinos with Free Spins" />
       <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">

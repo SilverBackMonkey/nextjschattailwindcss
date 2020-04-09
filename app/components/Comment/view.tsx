@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { SendMessageIcon } from "../../chat/_lib/ChatData";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 interface Props {
-  user: any;
   type: number;
   parent: number;
   addComment: (comment: any) => any;
@@ -12,14 +13,16 @@ interface Props {
   totalCount: any;
 }
 export const CommentView: React.FC<Props> = ({
-  user,
   type,
   parent,
   addComment,
   comments,
   totalCount,
 }) => {
-  const authorId = user?.id;
+
+  const { data: session, status } = useSession();
+
+  const user:any = session?.user;
   const [content, setContent] = useState("");
   const [count, setCount] = useState(3);
   const [total, setTotal] = useState(0);
@@ -95,11 +98,9 @@ export const CommentView: React.FC<Props> = ({
         parent: parent,
         content: content,
         author: {
-          id: authorId,
           name: user.name,
           image: user.image
         },
-        authorId: authorId,
         createdAt: new Date(),
       };
       setTotal(total + 1);
@@ -108,7 +109,7 @@ export const CommentView: React.FC<Props> = ({
 
       let addedComment = await addComment(comment);
 
-      if (addedComment.id) {
+      if (addedComment?.id) {
         let updatedMessages = optimisticComments.map((com) => {
           if (com?.sending) {
             return addedComment;
@@ -123,8 +124,8 @@ export const CommentView: React.FC<Props> = ({
         setCount(count - 1);
       }
     }
-
     setContent("");
+
   };
 
   return (
@@ -137,20 +138,15 @@ export const CommentView: React.FC<Props> = ({
 
       {user && (
         <form className="mb-6">
-          <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-            <label htmlFor="comment" className="sr-only">
-              Your comment
-            </label>
-            <textarea
-              id="comment"
-              rows={3}
-              className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
-              onChange={handleInputChange}
-              placeholder="Write a comment..."
-              value={content}
-              required={true}
-            ></textarea>
-          </div>
+          <textarea
+            id="comment"
+            rows={3}
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md mt-6 text-lg focus:outline-none focus:border-current dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+            onChange={handleInputChange}
+            placeholder="Write a comment..."
+            value={content}
+            required={true}
+          ></textarea>
           <div className="md:ml-4 sm:ml-2 mt-3">
             <button
               className="bg-sky-700 text-white dark:bg-white dark:text-black px-10 py-3 rounded-lg my-6 flex items-center justify-center"
@@ -177,11 +173,11 @@ export const CommentView: React.FC<Props> = ({
               <div className="flex items-center">
                 <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
                   <picture>
-                    <img
-                      className="mr-2 w-6 h-6 rounded-full"
-                      src={comment?.author?.image}
-                      alt={comment?.author?.name}
-                    />
+                  {comment?.author?.image && <Image className="mr-4 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-12 lg:h-12 rounded-full" src={user?.image} alt={user?.name? user.name: 'No Avatar'} />}
+                  {!comment?.author?.image && 
+                      <span className="rounded-full bg-yellow-500 text-white mr-4 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-12 lg:h-12 flex items-center justify-center">
+                          {comment?.author?.name}
+                      </span>}
                   </picture>
                   {comment?.author?.name}
                 </p>

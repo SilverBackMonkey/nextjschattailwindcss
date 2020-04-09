@@ -29,6 +29,7 @@ const Profile: React.FC<props> = ({user, addUsername}) => {
     }, [user])
 
     const onSelectFile = ev => {
+        ;
         let files = ev.target.files;
         let reader = new FileReader();
         reader.readAsDataURL(files[0]);
@@ -70,8 +71,7 @@ const Profile: React.FC<props> = ({user, addUsername}) => {
             setAdding(true);
             added = await addUsername(user.email, name, selectedFile);
             if(added) {
-                router.refresh();
-                router.push('/');
+                window.location.href = '/';
             }
             setAdding(false);
         }
@@ -144,7 +144,7 @@ const Profile: React.FC<props> = ({user, addUsername}) => {
                                         AFC Reward
                                     </label>
                                     <input type="text" id="award" placeholder="Your AFC Reward" 
-                                        value={user?.afcReward ? user?.afcReward : 0}
+                                        value={user?.afcRewards ? user?.afcRewards : 0}
                                         className="w-full px-3 py-2 placeholder-gray-300 rounded-md focus:outline-none focus:border-current dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500" name="email" disabled={true} />
                                 </div>
                                 
@@ -152,7 +152,10 @@ const Profile: React.FC<props> = ({user, addUsername}) => {
                                     <button type="button" onClick={submit}
                                         disabled={adding} 
                                         className="bg-sky-700 text-white dark:bg-white dark:text-black px-10 py-3 rounded-lg my-6 flex items-center justify-center mr-2">Save</button>
-                                    <button type="button" onClick={submit}
+                                    <button type="button" onClick={(e) => {
+                                        e.preventDefault();
+                                        window.location.pathname = '/';
+                                    }}
                                         disabled={adding} 
                                         className="bg-white border-2 border-sky-700 text-current dark:bg-white dark:text-black px-10 py-3 rounded-lg my-6 flex items-center justify-center mr-2">Cancel</button>                                    
                                 </div>

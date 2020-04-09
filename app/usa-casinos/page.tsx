@@ -18,6 +18,7 @@ import Notice from "@/components/Notice";
 import prisma from "@/client";
 import MobileJump from "../components/MobileJump";
 import { Metadata } from "next";
+import ProSchema from "@/components/ProJsonLDX";
 export async function generateMetadata({ params }): Promise<Metadata> {
   const Title =
     "USA Online Casino Guide : " +
@@ -58,6 +59,11 @@ async function getProps({ params }) {
       bonuses: {
         orderBy: [{ nodeposit: "desc" }, { deposit: "desc" }],
       },
+      casino_ratings: {
+        select: {
+          rating: true
+        }
+      }
     },
     orderBy: [{ hot: "desc" }, { new: "desc" }],
   });
@@ -68,6 +74,8 @@ async function getProps({ params }) {
 }
 
 export default async function PageOut({ params }) {
+  const hint_title= "Title"
+  const hint_text = "Text for the hint"
   const props = await getProps({ params });
   const prosCons = {
     pros: [
@@ -122,6 +130,7 @@ export default async function PageOut({ params }) {
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
       <FaqJsonLD data={faq} />
+      <ProSchema prosCons = {prosCons} name = "USA Casinos" product ="Casinos for USA Play" />
       <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">
@@ -199,7 +208,7 @@ export default async function PageOut({ params }) {
             </p>
             <CasinoDisplayList data={bdata} />
           </div>
-          <CasinoHint />
+          <CasinoHint title = {hint_title} text={hint_text}/>
           <TimeForNewCasino />
           <Notice />
 
@@ -213,24 +222,7 @@ export default async function PageOut({ params }) {
           </div>
         </div>
       </section>
-      <div className="text-left p-4 mt-2 md:mx-24 md:text-2xl">
-        <h3 className="text-2xl font-semibold md:text-5xl">
-          Use our USA casino guide to get huge bonuses
-        </h3>
-        <p className="text-base font-medium my-6 text-justify md:text-2xl md:font-normal">
-          At Allfreechips, you will find everything from lists of no deposit
-          bonuses to free spin casino codes and money contests in one place. The
-          bonus value may range from $5 to hundreds of dollars, depending on the
-          casino you choose. For your convenience, we analyze the offers of all
-          online gambling sites and provide you with the following:
-        </p>
-        <ul className="list-disc pl-4 font-normal">
-          <li>US bonus value;</li>
-          <li>playthrough requirements;</li>
-          <li>type of software used;</li>
-          <li>comprehensive USA reviews and rates.</li>
-        </ul>
-      </div>
+   
       <div className="flex flex-col m-4 bg-sky-100 dark:bg-gray-300 dark:text-black pt-4 pb-10 px-8 text-center rounded-xl md:mx-40">
         <p className="font-medium md:text-2xl">WE&amp;VE DONE THE HOMEWORK</p>
         <h4 className="text-2xl py-4 font-medium leading-8 md:text-4xl md:my-4">

@@ -1,4 +1,4 @@
-import Head from "next/head";
+
 import Link from "next/link";
 import {
   FaAngleRight,
@@ -16,9 +16,8 @@ import ProsCons from "../../components/ProsCons";
 import MobileJump from "../components/MobileJump";
 import { CgMenuLeft } from "react-icons/cg";
 import { GrClose } from "react-icons/gr";
+import ProSchema from "@/components/ProJsonLDX";
 
-// import { FaAngleDown } from "react-icons/fa";
-// import { useState, useEffect } from "react";
 export default function NoDepositContent({ children }) {
   const jumpTo = {
     links: [
@@ -73,6 +72,7 @@ export default function NoDepositContent({ children }) {
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">  
       <FaqJsonLD data={faq} />
+      <ProSchema prosCons = {prosCons} name = "No Deposit" product ="No Deposit Casinos" />
       <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">

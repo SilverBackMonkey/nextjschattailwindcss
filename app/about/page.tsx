@@ -1,6 +1,6 @@
-import Link from "next/link";
-
 export default async function page() {
+
+ 
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
       <div className="md:px-24 py-8 text-center mt-2 p-2">
@@ -18,4 +18,5 @@ export default async function page() {
       </div>
     </div>
   );
+
 }

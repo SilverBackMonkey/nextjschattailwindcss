@@ -77,14 +77,14 @@ export async function isReadyForPlay(user: User): Promise<{
     lastFreePlay == null ? new Date() : addHours(lastFreePlay.createdAt, 1);
   const isFreePlay = lastFreePlay == null || isAfter(new Date(), freePlayAt);
   return {
-    isReady: isFreePlay || user.afcRewards >= 1,
+    isReady: isFreePlay || user?.afcRewards >= 1,
     humanWhen: formatDistanceToNowStrict(freePlayAt),
     isFreePlay,
     lastOutcome:
       latestPlay != null
         ? { table: latestPlay.outcome, prize: latestPlay.prize }
         : null,
-    points: user.afcRewards,
+    points: user?.afcRewards,
     canWinCash,
   };
 }

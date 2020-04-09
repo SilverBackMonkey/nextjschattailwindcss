@@ -5,7 +5,7 @@ export async function getCount(type, key) {
   switch (type) {
     case 1: {
       try {
-        const results: any = await prisma.casino_p_casinos.findMany({
+        const count = await prisma.casino_p_casinos.count({
           where: {
             OR: [
               {
@@ -13,6 +13,7 @@ export async function getCount(type, key) {
                   some: {
                     title: {
                       contains: key,
+                      mode: 'insensitive',
                     },
                   },
                 },
@@ -20,12 +21,14 @@ export async function getCount(type, key) {
               {
                 casino: {
                   contains: key,
+                  mode: 'insensitive',
                 },
               },
             ],
           },
-        });
-        return results?.length;
+        })
+        
+        return count;
       } catch (err) {
         console.log(err);
       }
@@ -33,7 +36,7 @@ export async function getCount(type, key) {
 
     case 2: {
       try {
-        const result: any = await prisma.casino_p_games.findMany({
+        const result: any = await prisma.casino_p_games.count({
           where: {
             OR: [
               {
@@ -41,6 +44,7 @@ export async function getCount(type, key) {
                   some: {
                     title: {
                       contains: key,
+                      mode: 'insensitive',
                     },
                   },
                 },
@@ -48,12 +52,23 @@ export async function getCount(type, key) {
               {
                 game_name: {
                   contains: key,
+                  mode: 'insensitive',
                 },
               },
+              {
+                slot_theme:{
+                  some:{
+                    theme: {
+                      contains: key,
+                      mode: 'insensitive'
+                    }
+                  }
+                }
+              }
             ],
           },
         });
-        return result?.length;
+        return result;
       } catch (err) {
         console.log(err);
       }
@@ -76,33 +91,39 @@ export async function searchData(type, key, firstPageIndex) {
             meta: { select: { title: true } },
           },
           where: {
+            approved: 1,
+            rogue : 0,
             OR: [
-              {
-                meta: {
-                  some: {
-                    title: {
-                      startsWith: key,
-                    },
-                  },
-                },
-              },
+              // {
+              //   meta: {
+              //     some: {
+              //       title: {
+              //         startsWith: key,
+              //         mode: 'insensitive',
+              //       },
+              //     },
+              //   },
+              // },
               {
                 meta: {
                   some: {
                     title: {
                       contains: key,
+                      mode: 'insensitive',
                     },
                   },
                 },
               },
-              {
-                casino: {
-                  startsWith: key,
-                },
-              },
+              // {
+              //   casino: {
+              //     startsWith: key,
+              //     mode: 'insensitive',
+              //   },
+              // },
               {
                 casino: {
                   contains: key,
+                  mode: 'insensitive',
                 },
               },
             ],
@@ -131,34 +152,48 @@ export async function searchData(type, key, firstPageIndex) {
           },
           where: {
             OR: [
-              {
-                meta: {
-                  some: {
-                    title: {
-                      startsWith: key,
-                    },
-                  },
-                },
-              },
+              // {
+              //   meta: {
+              //     some: {
+              //       title: {
+              //         startsWith: key,
+              //         mode: 'insensitive',
+              //       },
+              //     },
+              //   },
+              // },
               {
                 meta: {
                   some: {
                     title: {
                       contains: key,
+                      mode: 'insensitive',
                     },
                   },
                 },
               },
-              {
-                game_name: {
-                  startsWith: key,
-                },
-              },
+              // {
+              //   game_name: {
+              //     startsWith: key,
+              //     mode: 'insensitive',
+              //   },
+              // },
               {
                 game_name: {
                   contains: key,
+                  mode: 'insensitive',
                 },
               },
+              {
+                slot_theme:{
+                  some:{
+                    theme: {
+                      contains: key,
+                      mode: 'insensitive'
+                    }
+                  }
+                }
+              }
             ],
           },
           take: 5,

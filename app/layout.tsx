@@ -1,8 +1,9 @@
+import { Analytics } from "@vercel/analytics/react";
+import Footer from "../components/Footer";
 import "../styles/globals.css";
 import AuthContext from "./AuthContext";
 import Header from "./Header";
-import Footer from "../components/Footer";
-import { Analytics } from "@vercel/analytics/react";
+
 export const metadata = {
   title: "AllFreeChips",
   description:
@@ -23,10 +24,10 @@ export default function RootLayout({
         <div className="bg-white text-sky-700 dark:bg-zinc-800 dark:text-white">
           <AuthContext>
             <Header />
+            <div className="content" id="afc-main">
+              {children}
+            </div>
           </AuthContext>
-          <div className="content" id="afc-main">
-            {children}
-          </div>
           <Footer />
         </div>
         <Analytics />

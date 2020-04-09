@@ -1,8 +1,8 @@
 import Currency from "./currency";
 const BonusFilter = (bdata) => {
 
-  bdata.forEach(function (item, index) {
-    let firstBonus = item.bonuses.find((v) => v.deposit > 0);
+  bdata?.forEach(function (item, index) {
+    let firstBonus = item?.bonuses.find((v) => v.deposit > 0);
     let ndBonus = item.bonuses.find((v) => v.nodeposit > 0);
     item.currency = firstBonus ? Currency(firstBonus.multi_currency) : "";
     item.fstext = "";

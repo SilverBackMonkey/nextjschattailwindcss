@@ -6,17 +6,22 @@ const factoryRatingModal = () => import('../RatingModal');
 const RatingModal = lazy(factoryRatingModal);
 import SelectRating from "../SelectRating";
 import RatingComponent from "../RatingComponent";
+import { useSession } from "next-auth/react";
 
-const RatingView = ({ authorId, type, parent, myRating, addRating }) => {
+const RatingView = ({ type, parent, myRating, addRating }) => {
   const [rating, setRating] = useState(myRating);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const { data: session, status } = useSession();
+
+  const userEmail = session?.user?.email;
 
   async function saveRating(rating) {
-    if (!authorId) return;
+    if (!userEmail) return;
     setRating(rating);
-    let addedRating = await addRating(rating, type, parent, authorId);
+    if(userEmail)
+      await addRating(rating, type, parent);
   }
 
   return (
@@ -25,7 +30,7 @@ const RatingView = ({ authorId, type, parent, myRating, addRating }) => {
     <>
       <div className="flex flex-col items-center py-6 space-y-3">
         <RatingComponent rating={rating} />
-        {rating == 0 && authorId && (
+        {rating == 0 && userEmail && (
           <button
             className="bg-sky-700 text-white dark:bg-white dark:text-black px-10 py-3 rounded-lg my-10 flex items-center justify-center"
             onClick={(e) => setShowRatingModal(true)}
@@ -33,11 +38,10 @@ const RatingView = ({ authorId, type, parent, myRating, addRating }) => {
             Setting star rating...
           </button>
         )}
-        {!authorId && <>You should sign in for star rating...</>}
+        {!userEmail && <>You should sign in for star rating...</>}
       </div>
       <RatingModal
         show={showRatingModal}
-        authorId={authorId}
         type={type}
         parentId={parent}
         setShow={setShowRatingModal}

@@ -17,7 +17,6 @@ import { usePathname, useRouter } from "next/navigation";
 const HeaderClient = ({ mobileIcon }) => {
   // get logined user personal information
   const { data: session, status } = useSession();
-
   // useRef when clicking outside of the showAvatarProfile
   const wrapperRef = useRef(null);
 
@@ -231,7 +230,7 @@ const HeaderClient = ({ mobileIcon }) => {
                   className="cursor-pointer flex text-sm border-2 border-transparent rounded focus:outline-none focus:border-white transition duration-150 ease-in-out items-center"
                 >
                   {session.user?.image ? (
-                    <img
+                    <Image
                       src={session.user?.image}
                       width={32}
                       height={32}
@@ -299,40 +298,9 @@ const HeaderClient = ({ mobileIcon }) => {
               )}
             </div>
           </div>
-          {/* {isMounted && session && session.user?.name ? (
-            <div>
-              {session.user?.image ? (
-                <div>
-                  <div data-popover-target="my-profile-avatar" data-popover-placement="bottom" className="mb-3 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                      <img src={session.user?.image} width={32} height={32} className="rounded" alt={session.user?.name} />
-                  </div>
-                </div>
-              ):(
-                <div>
-                  <span className="rounded-full bg-yellow-500 text-white w-10 h-10 flex items-center justify-center">{session.user?.name}</span>
-                  <span
-                    className="mx-8 font-medium hover:text-gray-400 hover:cursor-pointer"
-                    onClick={() => signOut()}
-                  >
-                    Sign&nbsp;Out
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <span
-              className="font-medium hover:text-gray-400 hover:cursor-pointer"
-              onClick={() => signIn()}
-            >
-              Sign&nbsp;In
-            </span>
-          )} */}
+          
         </div>
-        {/* <button aria-label="Toggle Dark Mode" type="button" className="mx-4 bg-sky-700 text-white dark:bg-white dark:text-black p-4 rounded" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? 'L' : 'D'}</button>        
-          <label htmlFor='check' className='bg-gray-700 dark:bg-white cursor-pointer relative w-10 h-5 lg:w-20 lg:h-10 rounded-full'>
-            <input type='checkbox' name='' id='check' className='sr-only peer' onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} />
-            <span className='w-2/5 h-4/5 bg-black absolute rounded-full left-0.5 top-0.5 lg:left-1 lg:top-1 peer-checked:bg-black peer-checked:left-5 lg:peer-checked:left-11 transition-all  duration-500'></span>
-          </label> */}
+
       </div>
       {showSearchModal && (
         <FullModal

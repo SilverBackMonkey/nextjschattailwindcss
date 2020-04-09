@@ -32,6 +32,11 @@ async function getCasinos() {
       bonuses: {
         orderBy: [{ deposit: "desc" }, { nodeposit: "desc" }],
       },
+      casino_ratings: {
+        select: {
+          rating: true
+        }
+      }
     },
     orderBy: [{ hot: "desc" }, { new: "desc" }],
     take: 10,

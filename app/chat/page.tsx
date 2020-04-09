@@ -21,12 +21,9 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 }
 export default async function Chat() {
   ""
-  const session = await getServerSession(authOptions);
-  //@ts-expect-error
+  const session: any = await getServerSession(authOptions);
+  
   const userEmail: string = session?.user?.email;
-  // const userEmail: string = "lionmarksham@gmail.com";
-  ////@ts-expect-error
-  // const myId: string = session?.user?.id;
   let user = await prisma.user.findFirst({
     where:{
         email: userEmail
@@ -164,14 +161,14 @@ export default async function Chat() {
             authorId: true,
             like: true,
             id: true,
-            author: {select: {name: true, image: true, role: true, email: true} },  
+            author: {select: {name: true, image: true, role: true, email: true} },
             likes:{select: {authorId: true}, where:{authorId: user?.id}}
           },
           orderBy:{
             createdAt:'desc'
           }
         });
-        
+
         let updatedMessages = aggregateMessageLike(messages);
 
         return updatedMessages;
@@ -183,7 +180,7 @@ export default async function Chat() {
   
   return (
     <>
-    <section className="bg-white dark:bg-gray-900 md:py-6 lg:py-8 md:py-4">
+    <section className="bg-white dark:bg-gray-900">
       <MessageList getMessages={getMessages} user={user} like={like} updateMessage={updateMessage} removeMessage={removeMessage} sendMessage={sendMessage}/>
     </section>
     </>

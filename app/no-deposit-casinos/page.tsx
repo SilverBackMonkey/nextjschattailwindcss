@@ -4,6 +4,7 @@ import BonusFilter from "../../components/functions/bonusfilter";
 import prisma from "@/client";
 import { Metadata } from "next";
 import monthYear from "@/components/functions/monthYear";
+
 export const revalidate = 300;
 export const dynamic = "error";
 
@@ -42,6 +43,11 @@ async function getCasinos() {
       bonuses: {
         orderBy: [{ nodeposit: "desc" }, { deposit: "desc" }],
       },
+      casino_ratings: {
+        select: {
+          rating: true
+        }
+      }
     },
     orderBy: [{ hot: "desc" }, { new: "desc" }],
     take: 5,
@@ -56,7 +62,7 @@ export default async function Nodeposit() {
   const casinos = await getCasinos();
   return (
     <NoDepositContent>
-      <NoDepositCasinoList bonus={casinos} />
+      <NoDepositCasinoList bonus={casinos} /> 
     </NoDepositContent>
   );
 }
