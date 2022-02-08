@@ -4,6 +4,8 @@ import BonusFilter from "../../components/functions/bonusfilter";
 import prisma from "@/client";
 import { Metadata } from "next";
 import monthYear from "@/components/functions/monthYear";
+export const revalidate = 300;
+export const dynamic = "error";
 
 export async function generateMetadata({ params }): Promise<Metadata> {
   const Title =
@@ -15,6 +17,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
     description: description,
   };
 }
+
 
 async function getCasinos() {
   const data = await prisma.casino_p_casinos.findMany({

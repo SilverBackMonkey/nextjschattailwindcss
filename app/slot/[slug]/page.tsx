@@ -1,30 +1,46 @@
 import MobileJump from "@/app/components/MobileJump";
-import Link from "next/link";
-import Faq from "@/components/faq";
-import ProsCons from "@/components/ProsCons";
-import LikeSlots from "@/components/LikeSlots";
-import LikeCasinos from "@/components/LikeCasinos";
-import cheerio from "cheerio";
-import BonusFilter from "@/components/functions/bonusfilter";
-import { VscStarEmpty } from "react-icons/vsc";
-import { BsArrowRightCircleFill, BsFillStarFill } from "react-icons/bs";
-import { FaAngleRight } from "react-icons/fa";
-import { GrClose } from "react-icons/gr";
-import { CgMenuLeft } from "react-icons/cg";
-import Author from "@/components/AboutAuthor";
+import {
+  addComment,
+  getComment,
+  getCountComment,
+} from "@/app/lib/CommentFetch";
+import { getRating, setRating } from "@/app/lib/RatingFetch";
 import prisma from "@/client";
-import { Metadata } from "next";
+import Author from "@/components/AboutAuthor";
+import Faq from "@/components/faq";
 import FaqJsonLD from "@/components/FaqJsonLDX";
-
+import BonusFilter from "@/components/functions/bonusfilter";
+import LikeCasinos from "@/components/LikeCasinos";
+import LikeSlots from "@/components/LikeSlots";
+import ProsCons from "@/components/ProsCons";
+import SlotSlider from "@/components/SlotSlider";
+import cheerio from "cheerio";
+import { Metadata } from "next";
+import Link from "next/link";
+import { BsArrowRightCircleFill, BsFillStarFill } from "react-icons/bs";
+import { CgMenuLeft } from "react-icons/cg";
+import { GrClose } from "react-icons/gr";
+import { VscStarEmpty } from "react-icons/vsc";
+import { Suspense } from "react";
+import { RatingView } from "@/app/components/rating/view";
+import { CommentView } from "@/app/components/Comment/view";
+import { getLoginUser } from "@/app/lib/UserFetch";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { _avg } from "@/app/lib/Aggregation";
+/*
+export const revalidate = 300;
+export const dynamic = "error";
+*/
 export async function generateMetadata({ params }): Promise<Metadata> {
   const props = await getProps({ params });
 
   const Title =
-    props.data.meta[0]?.title ??
-    props.data.game_name + " Online slot machine review";
+    props.data?.meta[0]?.title ??
+    props.data?.game_name + " Online slot machine review";
   const description =
-    props.data.meta[0]?.description ??
-    props.data.game_name + " Online slot machine review";
+    props.data?.meta[0]?.description ??
+    props.data?.game_name + " Online slot machine review";
   return {
     title: Title,
     description: description,
@@ -36,12 +52,34 @@ async function getProps({ params }) {
   const data: any = await prisma.casino_p_games.findFirst({
     where: { game_clean_name: slug },
     select: {
+      game_id: true,
       game_name: true,
       game_image: true,
       game_updated: true,
       game_faq: true,
       game_pros: true,
       game_cons: true,
+      game_comments: {
+        select: {
+          id: true,
+          createdAt: true,
+          content: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+          }},
+        },
+        orderBy:{
+          createdAt: 'desc'
+        }
+      },
+      game_ratings: {
+        select: {
+          rating: true
+        }
+      },
       meta: {
         select: {
           title: true,
@@ -72,39 +110,84 @@ async function getProps({ params }) {
       },
     },
   });
-  //console.log(data);
+
   const swId = data.software.id;
 
-  const gamedata = await prisma.$queryRawUnsafe(
-    `SELECT s.software_name,g.game_name,g.game_clean_name,g.game_reels,g.game_lines,g.game_image FROM casino_p_games g
+  // const gamed = await prisma.$queryRawUnsafe(
+  //   `SELECT s.software_name, g.game_name, g.game_clean_name,g.game_reels, g.game_lines, g.game_image FROM casino_p_games g
     
-    LEFT JOIN casino_p_software s
-    ON g.game_software = s.id
-    LEFT JOIN casino_p_descriptions_games d
-    ON g.game_id = d.parent
-    WHERE game_software in (` +
-      swId +
-      `)
-    AND d.description != ''  
-    ORDER BY RANDOM ()
-    LIMIT 5`
-  );
+  //   LEFT JOIN casino_p_software s
+  //   ON g.game_software = s.id
+  //   LEFT JOIN casino_p_descriptions_games d
+  //   ON g.game_id = d.parent
+  //   WHERE game_software in (` +
+  //     swId +
+  //     `)
+  //   AND d.description != ''
+  //   ORDER BY RANDOM ()
+  //   LIMIT 5`
+  // );
+  const gamedata = await prisma.casino_p_games.findMany({
+    select: {
+      game_id: true,
+      game_name: true,
+      game_clean_name: true,
+      game_reels: true,
+      game_lines: true,
+      game_image: true,
+      software: {select: {software_name: true}},
+      // game_ratings: {select: {rating: true}}
+    },
+    where: {
+      game_software: {
+        in: swId
+      },
+      review: {
+        every : {
+          description: {
+            not: ''
+          }
+        }
+      }
+    },
+    take: 5
+  })
   // Find 3 casinos that share the same software as the reviewd casino
-  const casinodata: any[] = await prisma.$queryRawUnsafe(
-    `SELECT c.id FROM casino_p_casinos c
-    LEFT JOIN casino_p_software_link s 
-    on s.casino = c.id
-    WHERE s.software in (` +
-      swId +
-      `)
-      AND c.approved = 1
-      AND c.rogue = 0
-    ORDER BY RANDOM ()
-    LIMIT 3`
-  );
+  // const casinoda: any[] = await prisma.$queryRawUnsafe(
+  //   `SELECT c.id FROM casino_p_casinos c
+  //   LEFT JOIN casino_p_software_link s 
+  //   on s.casino = c.id
+  //   WHERE s.software in (` +
+  //     swId +
+  //     `)
+  //     AND c.approved = 1
+  //     AND c.rogue = 0
+  //   ORDER BY RANDOM ()
+  //   LIMIT 3`
+  // );
+  const casinodata = await prisma.casino_p_casinos.findMany({
+    select: {
+      id: true,
+    },
+    where:{
+      softwares: {
+        every: {
+          software: {
+            in: swId
+          }
+        }
+      },
+      approved: {
+        equals: 1
+      },
+      rogue: {
+        equals: 0
+      }
+    },
+    take: 5
+  });
 
   const likeCasinoIds = casinodata.map((x) => x.id); // make a list of casinos that matched software
-
   const LikeCasinoData = await prisma.casino_p_casinos.findMany({
     where: {
       id: { in: likeCasinoIds },
@@ -115,6 +198,7 @@ async function getProps({ params }) {
       casino: true,
       button: true,
       homepageimage: true,
+      // casino_ratings: {select: {rating: true}},
       bonuses: {
         orderBy: {
           position: "desc",
@@ -126,7 +210,7 @@ async function getProps({ params }) {
   const bdatav: any[] = LikeCasinoData.filter((p) => p.bonuses.length > 0);
   const bdata = BonusFilter(bdatav);
   data.review = data.review.map((entry) => {
-    let desc = entry.description;
+    let desc = entry?.description;
     const $ = cheerio.load(desc);
     $("p").addClass("my-4");
     $("h1").addClass("text-3xl font-semibold my-6 md:text-4xl");
@@ -137,12 +221,15 @@ async function getProps({ params }) {
     $("h6").addClass("text-3xl font-semibold my-6 md:text-4xl");
     return { description: $.html() };
   });
+
   const faq = data.game_faq;
 
   const pros = data.game_pros;
   const cons = data.game_cons;
   const prosCons = { pros, cons };
+
   return { data, gamedata, bdata, faq, prosCons };
+  // return { data};
 }
 
 export default async function Review({ params }) {
@@ -150,7 +237,7 @@ export default async function Review({ params }) {
   const author = "AFC Chris";
   const reviewDate = "";
   const authorText =
-    "Chris Started working on Allfreechips in July of 2004, After many frustraiting years of learning how to make a webpage we now have the current site!  Chris started by being a player first, and loved online gaming so much he created the Allfreechips Community.";
+    "Chris Started working on Allfreechips in July of 2004, After many frustrating years of learning how to make a webpage we now have the current site!  Chris started by being a player first, and loved online gaming so much he created the Allfreechips Community.";
   const authorData = { author, authorText };
   const faq = props.faq;
   const prosCons = props.prosCons;
@@ -158,11 +245,19 @@ export default async function Review({ params }) {
   const data = props.data;
   const likeCasinoData = props.bdata;
   const gameList = props.gamedata;
-  const casinoname = likeCasinoData[0].casino;
-  const casinoid = likeCasinoData[0].id;
+
+  const user : any = await getLoginUser();
+
+  const commentsData = data.game_comments;
+
+  const totalCommentCount = commentsData.length;
+  const myRating = _avg(data.game_ratings);
+  const game_id = data.game_id;
+  const casinoname = likeCasinoData[0]?.casino;
+  const casinoid = likeCasinoData[0]?.id;
   const casinoData = { casinoid, casinoname };
   const gameListData = { gameList, casinoData };
-  const gameReview = { __html: data.review[0].description };
+  const gameReview = { __html: data.review[0]?.description };
   const links = [
     { link: "#SlotReview", text: `${data.game_name} Review` },
     { link: "#ProsCons", text: `${data.game_name} Pros and Cons` },
@@ -170,25 +265,10 @@ export default async function Review({ params }) {
     { link: "#LikeSlots", text: `Slots Like ${data.game_name}` },
     { link: "#faq", text: `${data.game_name} FAQs` },
   ];
+
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
       <FaqJsonLD data={faq} />
-      <div className="py-6 px-1 mt-28">
-        <div className="container mx-auto">
-          <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
-            <span>
-              <Link href="/">AFC Home</Link>
-            </span>
-            <FaAngleRight />
-            <span>
-              <Link href="/slot/">Reviews</Link>
-            </span>
-            <FaAngleRight />
-            <span className="text-slate-500">{data.game_name}</span>
-          </div>
-        </div>
-      </div>
-
       <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">
@@ -202,26 +282,6 @@ export default async function Review({ params }) {
               </a>
             </span>
             <span className="text-sky-600 dark:text-white">{reviewDate}</span>
-          </div>
-          <div className="bg-slate-100 dark:bg-gray-200 dark:text-black rounded-xl mt-3">
-            <div className="card p-4">
-              <div className="heading flex items-center border-b gap-7 pb-4">
-                <button className="w-10 h-7 rounded bg-sky-700 dark:bg-zinc-800"></button>
-                <h2 className="text-lg">
-                  Why you can trust{" "}
-                  <span className="font-bold">allfreechips.com</span>
-                </h2>
-                <a href="#">
-                  <i className="bi bi-info-circle"></i>
-                </a>
-              </div>
-              <p className="font-normal pt-4 pb-2 text-justify md:text-xl md:p-6">
-                Allfreechips is dedicated to bringing the best and latest online
-                casino bonus information. We rely on your input to insure the
-                casinos listed here are both correct and on the level by leaving
-                your reviews.
-              </p>
-            </div>
           </div>
         </div>
       </section>
@@ -257,7 +317,7 @@ export default async function Review({ params }) {
 
         <div className="md:w-3/4  text-lg md:text-xl font-medium">
           <p className="py-4">AT A GLANCE</p>
-
+          <SlotSlider imgs={data.game_images} game_id={data.game_id} />
           <div className="flex flex-col rounded-lg">
             <p className="py-4 font-bold my-4 md:my-8">
               Slot Details of the {data.game_name} Slot Machine
@@ -272,6 +332,28 @@ export default async function Review({ params }) {
               className="text-lg font-normal"
               dangerouslySetInnerHTML={gameReview}
             ></div>
+
+            <Suspense fallback={<></>}>              
+              <RatingView      
+                authorId={user?.id}
+                type={2}
+                parent={game_id}
+                myRating={myRating}
+                addRating={setRating}
+              />
+            </Suspense> 
+
+            <Suspense fallback={<></>}>
+              <CommentView
+                user={user}
+                type={2}
+                addComment={addComment}
+                parent={game_id}
+                comments={commentsData}
+                totalCount={totalCommentCount}
+              />
+            </Suspense>
+
             <ProsCons data={prosCons} />
             <div className="text-lg font-normal">
               <h3 className="text-3xl font-semibold my-6 md:text-4xl md:my-10">

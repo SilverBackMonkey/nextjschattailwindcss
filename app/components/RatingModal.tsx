@@ -1,12 +1,10 @@
 "use client";
-import Modal from "@/components/Modal";
 import React, { useEffect, useState } from "react";
-import Rating from "./rating";
 import SelectRating from "./SelectRating";
 
 interface Props {
-  show: boolean;
-  userId: any,
+  show: boolean,
+  authorId: any,
   type: number,
   parentId: number,
   setShow: (boolean) => void;
@@ -15,30 +13,26 @@ interface Props {
 
 const RatingModal: React.FC<Props> = ({
   show,
-  userId,
+  authorId,
   type,
   parentId,
   setShow,
   saveRating,
 }) => {
+  const [rating, setRating] = useState(0);
 
-    const [rating, setRating] = useState(0);
+  const submit = (e) => {
+    e.preventDefault();
+    saveRating(rating);
 
-    const submit = (e) => {
-        e.preventDefault();
-        debugger;
-        saveRating(rating);
+    setShow(false);
+  };
 
-        setShow(false);
-    };
-
-    return (
+  return (
     <>
-     {show ? (
+      {show ? (
         <>
-          <div
-            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-          >
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
             <div className="relative w-auto my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
@@ -59,14 +53,24 @@ const RatingModal: React.FC<Props> = ({
 
                 {/*body*/}
                 <div className="bg-gray-200 w-full flex flex-col items-center">
-                <SelectRating rating={rating} setRating={setRating} />
-                <div className="w-3/4 flex flex-col">
-                    <button className="py-3 my-8 text-lg bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white" onClick={(e) => submit(e)}>Rate now</button>
+                  <SelectRating rating={rating} setRating={setRating} />
+                  <div className="w-3/4 flex flex-col">
+                    <button
+                      className="py-3 my-8 text-lg bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white"
+                      onClick={(e) => submit(e)}
+                    >
+                      Rate now
+                    </button>
+                  </div>
                 </div>
-            </div>
                 {/*footer*/}
                 <div className="h-20 flex items-center justify-center">
-                    <button className="text-gray-600" onClick={e => setShow(false)}>Maybe later</button>
+                  <button
+                    className="text-gray-600"
+                    onClick={(e) => setShow(false)}
+                  >
+                    Maybe later
+                  </button>
                 </div>
               </div>
             </div>
@@ -74,7 +78,6 @@ const RatingModal: React.FC<Props> = ({
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
-    
     </>
   );
 };
