@@ -13,6 +13,12 @@ const Footer = () => {
             src={`https://afc-redux.vercel.app/logo.png`}
           />
         </Link>
+        <ul className="text-base font-medium">
+            <li className="my-6"><Link href="https://www.begambleaware.org/" rel="nofollow" target = "_blank">
+              <Image alt="Be Gamble Aware" height = "38" width= "250" src="https://www.allfreechips.com/image/i/begambleaware.png"/></Link></li>
+              <li className="my-6"><Link href="https://www.taketimetothink.co.uk/" rel="nofollow" target = "_blank">
+              <Image alt="Take Time" height = "38" width= "250" src="https://www.allfreechips.com/image/taketime.png"/></Link></li>
+          </ul>
       </span>
       <div className="flex space-x-6 md:flex-row md:space-x-28">
         <div className="flex flex-col">
@@ -53,6 +59,7 @@ const Footer = () => {
             <li className="my-6">AFC Dice Game</li>
           </ul>
         </div>
+       
       </div>
     </div>
   );

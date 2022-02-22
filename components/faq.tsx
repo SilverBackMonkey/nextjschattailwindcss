@@ -5,7 +5,7 @@ const Faq = (props: any) => {
 
  
   if (!props?.data[0]?.question?.length) {
-    return null;
+    
   }
   const faq = props.data
   return (

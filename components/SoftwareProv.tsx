@@ -8,7 +8,7 @@ const SoftwareProv = (props) => {
       </div>
       <hr className="m-4" />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 m-8">
-        {props.data.softwares.map(function (d, id) {
+        {props.data && props.data.softwares && props.data.softwares.length > 0 && props.data.softwares.map(function (d, id) {
           return (
             <div key={d.id} className="flex items-center">
               <Image

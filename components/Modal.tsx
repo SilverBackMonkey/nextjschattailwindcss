@@ -13,9 +13,9 @@ interface Props {
 const Modal : React.FC<Props> = ({title, show, setShow, children, type, submit}) => {
   
   const submitButton = () =>{
-    setShow(false);
     if(submit)
       submit();
+    setShow(false);
   }
 
   return (

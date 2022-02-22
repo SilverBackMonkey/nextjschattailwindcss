@@ -3,11 +3,17 @@ import Link from "next/link";
 import { BsFillStarFill, BsArrowRightCircleFill } from "react-icons/bs";
 import { VscStarEmpty } from "react-icons/vsc";
 import LikeCasinoImage from "./LikeCasinoImage";
+import { _avg } from "@/app/lib/Aggregation";
 
 const LikeCasinos = (props) => {
+
+  const ratings = props.data.map((d, index) => {
+    return _avg(d.casino_ratings);
+  })
+
   return (
     <div className="flex flex-col md:flex-row space-y-4 md:space-y-0">
-      {props.data.map((d) => (
+      {props.data.map((d, index) => (
         <div
           key={d.id}
           className="flex flex-col items-center w-full md:w-1/3 border border-gray-200 shadow-md space-y-4 py-6 rounded-xl"
@@ -18,12 +24,17 @@ const LikeCasinos = (props) => {
           />
           <span>{d.casino}</span>
           <span className="flex items-center">
-            <BsFillStarFill />
-            <BsFillStarFill />
-            <BsFillStarFill />
-            <VscStarEmpty />
-            <VscStarEmpty />
-            <span className="px-2">4.1</span>
+          {[1, 2, 3, 4, 5].map((value) => (
+                <div key={value}>
+                    {ratings[index] >= value && (
+                      <BsFillStarFill />
+                    )}
+                    {ratings[index] < value && (
+                      <VscStarEmpty />
+                    )}
+                </div>
+                ))}
+            <span className="px-2">{ratings[index]?.toFixed(2)}</span>
           </span>
           <Link
             href={`https://allfreechips.com/play_casino${encodeURIComponent(
