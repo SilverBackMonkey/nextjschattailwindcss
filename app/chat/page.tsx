@@ -9,7 +9,6 @@ import MessageList from "./_Components/MessageList";
 // import cache from 'memory-cache'
 import { Metadata } from "next";
 
-
 export async function generateMetadata({ params }): Promise<Metadata> {
   const Title = "Allfreechips Community Chat, lets talk about whatever!"
   const description = "Hang out with the fun AFC members and discuss anything you like as long as you do not get offensive."
@@ -35,26 +34,7 @@ export default async function Chat() {
     user = null;
   }
   const myId = user?.id;
-  function aggregateMessageLike(messages: any) {
-    
-    return messages.map(message => {
-      let temp:any = {};
-      temp['createdAt'] = message.createdAt;
-      temp['message'] = message.message;
-      temp['authorId'] = message.authorId;
-      temp['like'] = message.like;
-      temp['id'] = message.id;
-      temp['username'] = message.name;
-      temp['userImage'] = message.image;
-      temp['userRole'] = message.role;
-      temp['userEmail'] = message.email;
-  
-      temp['isLiked'] = false;
-      if(message?.likes?.length > 0) 
-        temp['isLiked'] = true;
-      return temp;
-    })
-  }
+
   async function updateMessage (message:any) {
     "use server";
     try {
@@ -68,7 +48,9 @@ export default async function Chat() {
     })}
     catch(error) {
       console.log(error)
-    } 
+    } finally{
+      prisma.$disconnect();
+    }
   }
   
   async function removeMessage (messageId: string) {
@@ -84,7 +66,9 @@ export default async function Chat() {
     catch(error) {
       console.log(error)
       return error
-    } 
+    } finally{
+      prisma.$disconnect();
+    };
     return messageId;
   }
 
@@ -129,14 +113,13 @@ export default async function Chat() {
     }
     catch(error) {
       console.log(error)
+    } finally{
+      prisma.$disconnect();
     }
 
     return message;
 
   }
-
-
-
   async function sendMessage(message: any) {
     "use server"; 
 
@@ -145,28 +128,49 @@ export default async function Chat() {
         let result = await prisma.chatMessage.create({
           data: { message, author: { connect: { email: userEmail } }, like:0 },
         });
-
-        let updatedMessages: any = await prisma.chatMessage.findMany({
-          select: {
-            createdAt: true,
-            message: true,
-            authorId: true,
-            like: true,
-            id: true,
-            author: {select: {name: true, image: true, role: true, email: true} },  
-            likes:{select: {authorId: true}, where:{authorId: user?.id}}
-          },
-          where:{
-            id: result.id
-          },
-          orderBy:{
-            createdAt:'desc'
-          }
-        });
-        return updatedMessages[0];
+        let updatedMessages: any = await prisma.$queryRaw`
+        SELECT
+        "ChatMessage"."createdAt", 
+        "ChatMessage".message, 
+        "ChatMessage"."authorId" AS "userId", 
+        "ChatMessage"."like", 
+        "ChatMessage"."id", 
+        ARRAY_AGG(tb_pbot."authorId") AS "userLikeList",
+        users."name" AS username,
+        users.image AS "userImage", 
+        users."role" AS "userRole", 
+        users.email AS "userEmail"
+      FROM
+        "ChatMessage"
+        LEFT JOIN
+        tb_pbot
+        ON 
+          "ChatMessage"."id" = tb_pbot."messageId"
+        INNER JOIN
+        users
+        ON 
+          "ChatMessage"."authorId" = users."id"
+      WHERE
+        "ChatMessage"."id" = ${result.id}
+      GROUP BY
+        "ChatMessage"."createdAt", 
+        "ChatMessage".message, 
+        "ChatMessage"."authorId", 
+        "ChatMessage"."like", 
+        "ChatMessage"."id", 
+        users."name", 
+        users.email, 
+        users.image, 
+        users."role"
+      ORDER BY
+        "ChatMessage"."createdAt" DESC;
+    `
+    return updatedMessages[0];
       }
       catch(error) {
         console.log(error)
+      } finally{
+        prisma.$disconnect();
       }
     }
     
@@ -175,30 +179,87 @@ export default async function Chat() {
     "use server"; 
 
       try {
-        let messages = await prisma.chatMessage.findMany({
-          select: {
-            createdAt: true,
-            message: true,
-            authorId: true,
-            like: true,
-            id: true,
-            author: {select: {name: true, image: true, role: true, email: true} },  
-            likes:{select: {authorId: true}, where:{authorId: user?.id}}
-          },
-          orderBy:{
-            createdAt:'desc'
-          }
-        });
-        
-        let updatedMessages = aggregateMessageLike(messages);
-
-        return updatedMessages;
+        let updatedMessages: any = await prisma.$queryRaw`
+        SELECT
+        "ChatMessage"."createdAt",
+        "ChatMessage".message,
+        "ChatMessage"."authorId" AS "userId",
+        "ChatMessage"."like",
+        "ChatMessage"."id",
+        (
+            SELECT COUNT(*)
+            FROM tb_pbot
+            WHERE tb_pbot."messageId" = "ChatMessage"."id" AND tb_pbot."authorId" = ${user?.id}
+        ) > 0 AS "isLiked",
+        users."name" AS username,
+        users.image AS "userImage",
+        users."role" AS "userRole",
+        users.email AS "userEmail"
+      FROM
+        "ChatMessage"
+        INNER JOIN
+        users
+        ON
+            "ChatMessage"."authorId" = users."id"
+      GROUP BY
+        "ChatMessage"."createdAt",
+        "ChatMessage".message,
+        "ChatMessage"."authorId",
+        "ChatMessage"."like",
+        "ChatMessage"."id",
+        users."name",
+        users.email,
+        users.image,
+        users."role"
+      ORDER BY
+        "ChatMessage"."createdAt" DESC;
+          `;
+      return updatedMessages;
       }
       catch(error) {
         console.log(error)
+      } finally{
+        prisma.$disconnect();
       }
-  }
   
+    
+  }
+//   const messages = await prisma.$queryRaw`
+//   SELECT
+//   "ChatMessage"."createdAt",
+//   "ChatMessage".message,
+//   "ChatMessage"."authorId" AS "userId",
+//   "ChatMessage"."like",
+//   "ChatMessage"."id",
+//   (
+//       SELECT COUNT(*)
+//       FROM tb_pbot
+//       WHERE tb_pbot."messageId" = "ChatMessage"."id" AND tb_pbot."authorId" = ${user?.id}
+//   ) > 0 AS "isLiked",
+//   users."name" AS username,
+//   users.image AS "userImage",
+//   users."role" AS "userRole",
+//   users.email AS "userEmail"
+// FROM
+//   "ChatMessage"
+//   INNER JOIN
+//   users
+//   ON
+//       "ChatMessage"."authorId" = users."id"
+// GROUP BY
+//   "ChatMessage"."createdAt",
+//   "ChatMessage".message,
+//   "ChatMessage"."authorId",
+//   "ChatMessage"."like",
+//   "ChatMessage"."id",
+//   users."name",
+//   users.email,
+//   users.image,
+//   users."role"
+// ORDER BY
+//   "ChatMessage"."createdAt" DESC;
+//     `;
+
   return (
     <>
     <section className="bg-white dark:bg-gray-900 md:py-6 lg:py-8 md:py-4">

@@ -1,5 +1,4 @@
-import Comment from "@/app/components/Comment";
-import CommentList from "@/app/components/CommentList";
+
 import MobileJump from "@/app/components/MobileJump";
 import prisma from "@/client";
 import Author from "@/components/AboutAuthor";
@@ -379,7 +378,6 @@ export default async function Review({ params }) {
               dangerouslySetInnerHTML={casinoReview}
             ></div>
 
-            <CommentList type={1} parent="aaa"/>
 
             <ProsCons data={prosCons} />
             <div className="text-lg font-normal">
@@ -412,13 +410,7 @@ export default async function Review({ params }) {
           </div>
         </div>
       </section>
-<<<<<<< HEAD
 
-=======
-      <section className="bg-white dark:bg-gray-900 py-8 lg:py-16">
-        <Comment type={1} parent="aaa" user="fda" />
-      </section>
->>>>>>> 32431e16be1d8cf41c79bde5c381eb1bf31de681
     </div>
   );
 }

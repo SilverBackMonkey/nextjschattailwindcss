@@ -1,10 +1,11 @@
 import prisma from '@/client';
 import React from 'react';
 
-export async function  getComment(type, parent) {
+export async function  getComment(type, parent, count) {
   "use server";
-  
   try{
+    console.log(type);
+    console.log(parent);
     const comments:any = await prisma.comments.findMany({
       select: {
         id: true,
@@ -16,31 +17,15 @@ export async function  getComment(type, parent) {
         type:type,
         parentId: parent
       },
-      orderBy:{
-        createdAt: "desc"
-      },
+      take: count
     })
     return comments;
   }
   catch(err){
     console.log(err);
   }
-}
-
-export async function getCountComment(type, parent) {
-  "use server";
-  
-  try{
-    const count = await prisma.comments.count({
-      where:{
-        type:type,
-        parentId: parent
-      }
-    })
-    return count;
-  }
-  catch(err){
-    console.log(err);
+  finally{
+    prisma.$disconnect();
   }
 }
 
@@ -48,36 +33,21 @@ export async function  addComment(comment) {
   "use server";
   
   try{
-    let newComment = await prisma.comments.create({
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        author: { select: { image: true, name: true, id: true, email: true } },
-      },
+    const newComment:any = await prisma.comments.create({
       data:{
         type:comment.type,
         parentId:comment.parent,
-        author: { connect: { id: comment.authorId } },
+        authorId: comment.authorId,  
         content:comment.content
       }
     })
-
-    let result = await prisma.comments.findFirst({
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        author: { select: { image: true, name: true, id: true, email: true } },
-      },
-      where:{
-        id: newComment.id
-      }
-    })
-    console.log(result);
-    return result;
+    
+    return newComment;
   }
   catch(error) {
     console.log(error)
+  }
+  finally{
+    prisma.$disconnect();
   }
 }

@@ -1,6 +1,7 @@
 'use client';
 import {lazy, useEffect, useState} from 'react';
 import { DeleteIcon, EditIcon, NoAvartar, replaceEmoticons} from "../_lib/ChatData";
+import { sendMessage } from '../_lib/functions';
 import ShoutBox from './ShoutBox';
 import LikeButton from './LikeButton';
 const factoryDeleteModal = () => import('./CommentDeleteModal');
@@ -35,16 +36,15 @@ const MessageList: React.FC<props> = ({user, getMessages, like, updateMessage, r
             } catch (error) {
               console.error(error);
             }
-        }
+          }
         
-        fetchMessages();
-        const intervalId = setInterval(() => {
+          fetchMessages();
+          const intervalId = setInterval(() => {
             fetchMessages();
-        }, 50000); // Fetch every 5 seconds
-    
-        // Return a cleanup function to clear the interval when the component unmounts
-        return () => clearInterval(intervalId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+          }, 5000); // Fetch every 5 seconds
+        
+          // Return a cleanup function to clear the interval when the component unmounts
+          return () => clearInterval(intervalId);
     }, [])
 
     const likeMessage = async (message) => {
@@ -86,6 +86,7 @@ const MessageList: React.FC<props> = ({user, getMessages, like, updateMessage, r
             setOptimisticMessages(updatedMessages);            
         }
         else {
+            console.log('this is sending message else')
             return;
         }
     }
@@ -114,6 +115,7 @@ const MessageList: React.FC<props> = ({user, getMessages, like, updateMessage, r
         let updatedMessages = optimisticMessages.filter(mes => mes.id != message.id);
         setOptimisticMessages(updatedMessages);            
         const res = removeMessage(message?.id);
+        console.log(res);
         setLoading(false);
     }
 
@@ -175,7 +177,6 @@ const MessageList: React.FC<props> = ({user, getMessages, like, updateMessage, r
                         <div className="flex items-center">
                             <div className="inline-flex items-center text-sm text-gray-900 dark:text-white">
                             {message?.userImage && 
-                                // eslint-disable-next-line @next/next/no-img-element
                                 <img className="mr-2 sm:w-8 sm:h-8 md:w-12 md:h-12 lg:w-16 lg:h-16 rounded-full" src={message?.userImage} alt={message?.username}  />
                             }
                             {!message?.userImage &&

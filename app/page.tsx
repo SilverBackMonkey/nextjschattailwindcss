@@ -77,14 +77,30 @@ export default async function page() {
   };
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
+      <div className="py-6 px-1 mt-4">
+        <div className="container mx-auto">
+          <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
+            <span>AFC Home</span>
+          </div>
+        </div>
+      </div>
       <GridGuide />
       <div className="px-2 py-4 text-center">
         <h2 className="text-2xl font-semibold px-8 py-4 md:text-5xl md:py-14">
           Best Online Gambling Sites in US
         </h2>
+        <div className="flex overflow-scroll md:overflow-hidden space-x-3 space-y-2 justify-center my-4">
+          <Buttonlight name={"All Casino"} />
+          <Buttonlight name={"All Casino"} />
+          <Buttonlight name={"All Casino"} />
+          <Buttonlight name={"All Casino"} />
+        </div>
       </div>
 
+      <h1>LOCATION </h1>
       <CasinoSingleCard data ={cardData} />
+      <CasinoDisplayList data ={casinos} />
+      
       <Bonus data = {casinos} />
       <div className="m-4 md:mx-32 md:mt-28">
         <h4 className="text-2xl font-medium py-2 text-left md:text-5xl md:my-4">
@@ -92,7 +108,7 @@ export default async function page() {
         </h4>
         <p className="font-medium text-justify md:text-2xl md:my-10">
           We bring you the top rated online casino bonuses targeted to your
-          location. Allfreechips also has the <Link href="/casino-match">Casinomatch</Link> system where you can
+          location. Allfreechips also has the Casinomatch system where you can
           further filter your very own casino top list and see updates daily.
         </p>
         <div className="px-2 md:py-2">
