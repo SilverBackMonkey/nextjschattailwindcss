@@ -5,7 +5,7 @@ import { FaStar, FaCopyright, FaArrowCircleRight } from "react-icons/fa";
 
 const HighRollerCard = () => {
   return (
-    <div className="border-1 border-2 items-center border-gray-300 p-6 rounded my-8 md:mx-80 md:p-12 md:rounded-xl ">
+    <div className="border-1 border-2 items-center border-gray-300 p-6 rounded my-8 md:mx-8 md:p-12 md:rounded-xl ">
       <div className="md:flex md:justify-between">
         <div className="flex items-center md:flex-col">
           <Image src={lapander} alt={"High Roller Card"} />
@@ -42,7 +42,7 @@ const HighRollerCard = () => {
         </div>
       </div>
       <div className="flex justify-between">
-        <div className="flex flex-row items-end md:flex-row md:items-center space-x-6">
+        <div className="flex flex-row md:flex-row md:items-center sm:items-center space-x-6">
           <p className="text-sm font-medium">Approved by experts</p>
           <div className="flex items-center space-x-1">
             <FaStar />
@@ -54,7 +54,7 @@ const HighRollerCard = () => {
             <FaCopyright />
           </div>
         </div>
-        <div className="w-[195px]">
+        <div className="flex flex-col items-center justify-center w-[178px]">
           <h5 className="text-normal font-medium">Review</h5>
         </div>
       </div>

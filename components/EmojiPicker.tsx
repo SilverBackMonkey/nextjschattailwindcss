@@ -21,6 +21,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({ onEmojiSelect }) => {
   const PickerComponent = Picker as any;
 
   return <PickerComponent onSelect={handleEmojiSelect} />;
+
 };
 
 export default EmojiPicker;

@@ -5,6 +5,9 @@ const ProsCons = (props) => {
   if (!pro?.pros?.length) {
     return null;
   }
+  if (!pro?.cons?.length) {
+    return null;
+  }
   return (
     <div
       id="ProsCons"

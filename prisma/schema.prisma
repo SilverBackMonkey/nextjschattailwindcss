@@ -12,8 +12,16 @@ model ChatMessage {
   createdAt DateTime @default(now())
   message   String
   authorId  String
+  like      Int      @default(0)
 
   author User @relation(fields: [authorId], references: [id])
+}
+
+model tb_pbot {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  messageId String
+  authorId  String
 }
 
 model Post {
@@ -33,6 +41,8 @@ model Post {
 model Comments {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
+  type      Int?
+  parentId    String?
   postId    String?
   content   String?
   published Boolean  @default(false)
@@ -82,24 +92,42 @@ model User {
   updatedAt     DateTime          @updatedAt @map("updated_at")
   user_lvl      String?
   isAdmin       Boolean           @default(false)
-  role          Int?
-  afcRewards    Int?
+  role          Int               @default(1)
+  afcRewards    Int               @default(0)
   posts         Post[]
   accounts      Account[]
   sessions      Session[]
   scratchCard   ScratchCardGame[]
   comments      Comments[]
-  chatMessages  ChatMessage[]
+
+  chatMessages     ChatMessage[]
+  ScratchCardAward ScratchCardAward[]
 
   @@map("users")
 }
 
 model ScratchCardGame {
-  id        Int      @id @default(autoincrement())
+  id               Int                @id @default(autoincrement())
+  user_id          String
+  outcome          String[]
+  prize            String?
+  chipset          String[]
+  freePlay         Boolean            @default(true)
+  user             User               @relation(fields: [user_id], references: [id])
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  ScratchCardAward ScratchCardAward[]
+}
+
+model ScratchCardAward {
+  id        Int             @id @default(autoincrement())
+  awarded   Boolean
+  usdAmount Int
+  game_id   Int
+  game      ScratchCardGame @relation(fields: [game_id], references: [id])
   user_id   String
-  outcome   String[]
-  prize     String?
-  user      User     @relation(fields: [user_id], references: [id])
+  user      User            @relation(fields: [user_id], references: [id])
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }

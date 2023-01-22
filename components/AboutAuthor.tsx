@@ -2,6 +2,8 @@ import React from "react";
 import { FcBusinessman } from "react-icons/fc";
 import { RiMailLine } from "react-icons/ri"; 
 import { AiFillLinkedin } from "react-icons/ai";
+
+
 const Author = (props) => {
   
   return (

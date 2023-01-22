@@ -4,8 +4,8 @@ import Image from "next/legacy/image";
 import { BsArrowRightCircleFill } from "react-icons/bs";
 import Currency from "./functions/currency";
 import { FaChevronCircleDown, FaChevronCircleUp } from "react-icons/fa";
+import { BonusItemTerms } from "./BonusItemTerms";
 function BonusItem(props) {
-  const [showTerms, setShowTerms] = useState<string>("");
   const bonusTerms =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat elit vel tellus eleifend imperdiet. Donec consectetur urna sed neque rhoncus dapibus. Aenean nunc erat, lobortis a ex dignissim, scelerisque malesuada odio. Sed vestibulum dictum eleifend.";
 
@@ -87,23 +87,11 @@ function BonusItem(props) {
                 <BsArrowRightCircleFill className="mx-4" />
               </Link>
             </div>
-            <div
-              className="flex justify-center items-center select-none cursor-pointer"
-              onClick={() => setShowTerms(showTerms === d.id ? null : d.id)}
-            >
-              <span className="pr-4">Bonus details</span>
-
-              {showTerms === d.id ? (
-                <FaChevronCircleUp />
-              ) : (
-                <FaChevronCircleDown />
-              )}
-            </div>
-            {showTerms === d.id && (
-              <div className=" pt-3 text-sm">
-                <h6>{bonusTerms}</h6>
-              </div>
-            )}
+            <BonusItemTerms
+              bonusTerms={bonusTerms}
+              open={<FaChevronCircleDown />}
+              close={<FaChevronCircleUp />}
+            />
           </div>
         );
       })}

@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: false,
   images: {
     domains: [
+      "localhost:3000",
       "allfreechips.com",
       "www.allfreechips.com",
       "afc-redux.vercel.app",

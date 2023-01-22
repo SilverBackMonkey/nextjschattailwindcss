@@ -6,7 +6,19 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    maxWidth:{
+      '1/2': '50%'
+    },
+    screens: {
+      sm: '320px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+    },
     extend: {},
   },
   plugins: [],
+  variants: {
+    gap: ['responsive', 'hover', 'focus'],
+  }
 };

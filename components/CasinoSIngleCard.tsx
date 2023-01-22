@@ -2,15 +2,14 @@ import { FaStar, FaCopyright, FaArrowCircleRight } from "react-icons/fa";
 import Image from "next/image";
 const CasinoSingleCard = (data) => {
     const cardData = data.data
-    console.log(cardData);
   return (
     
-    
-    <div className="flex flex-col lg:flex-row border-2 border-gray-300 p-6 rounded lg:mx-40 lg:p-12 lg:rounded-xl space-x-8">
+
+    <div className="flex flex-col lg:flex-row border-2 border-gray-300 p-6 rounded lg:p-12 lg:rounded-xl space-x-8">
       <span className="bg-sky-600 dark:bg-white rounded-t-lg text-white dark:text-black p-1 lg:hidden">
       {cardData.title}
       </span>
-      <span><Image src={cardData.casinoImage} height={80} width={100} alt={cardData.name} /></span>
+      <span><Image src={cardData.casinoImage} height={80} width={200} alt={cardData.name} /></span>
       <div className="flex flex-col py-4 lg:py-0 lg:pl-10">
         <div className="flex flex-col lg:flex-row lg:space-x-16">
           <h3 className="text-xl font-medium text-center mb-10 lg:mb-0">

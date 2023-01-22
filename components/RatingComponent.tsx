@@ -39,7 +39,7 @@ function RatingComponent({ type, id }) {
     }
   };
 
-  const starIcons = [];
+  const starIcons: React.ReactNode[] = [];
   for (let i = 1; i <= 5; i++) {
     if (i <= rating) {
       starIcons.push(<BsFillStarFill key={i} />);

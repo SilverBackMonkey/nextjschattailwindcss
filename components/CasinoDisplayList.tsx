@@ -81,10 +81,10 @@ function CasinoDisplayList(props) {
         </div>
       </div>
 
-      <div className="flex justify-between">
-        <div className="flex flex-row items-end md:flex-row md:items-center space-x-6">
+      <div className="md:flex md:justify-between">
+      <div className="flex flex-row md:flex-row md:items-center sm:items-center md:space-x-6 sm:space-x-3">
           <p className="text-sm font-medium">Approved by experts</p>
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center md:space-x-2 sm:space-x-0">
             <FaStar />
             <FaStar />
             <FaStar />

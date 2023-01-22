@@ -22,7 +22,7 @@ const Footer = () => {
           </div>
           <ul className="text-base font-medium">
             <li className="my-6">
-              <Link href="/best-casinos">Best Online Casinos</Link>
+              <Link href="/best-online-casinos">Best Online Casinos</Link>
             </li>
             <li className="my-6">
               <Link href="/new-casinos">New Online Casinos</Link>
@@ -44,10 +44,12 @@ const Footer = () => {
             <hr className="w-84 text-gray-600" />
           </div>
           <ul className="text-base font-medium">
-            <li className="my-6">About Us</li>
-            <li className="my-6">Forum</li>
-            <li className="my-6">Terms & Condition</li>
-            <li className="my-6">Free Stratch Cards</li>
+            <li className="my-6"><Link href="/about">About Us</Link></li>
+            <li className="my-6"><Link href="/chat">Discussions</Link></li>
+            <li className="my-6">
+            <Link href="/terms">Terms & Condition</Link>
+            </li>
+            <li className="my-6"><Link href="/scratch-cards">Free Scratch Cards</Link></li>
             <li className="my-6">AFC Dice Game</li>
           </ul>
         </div>

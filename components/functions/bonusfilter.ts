@@ -4,7 +4,7 @@ const BonusFilter = (bdata) => {
   bdata.forEach(function (item, index) {
     let firstBonus = item.bonuses.find((v) => v.deposit > 0);
     let ndBonus = item.bonuses.find((v) => v.nodeposit > 0);
-    item.currency = Currency(firstBonus.multi_currency);
+    item.currency = firstBonus ? Currency(firstBonus.multi_currency) : "";
     item.fstext = "";
     if (firstBonus && ndBonus) {
       item.nodeposit_type = "No Deposit";
