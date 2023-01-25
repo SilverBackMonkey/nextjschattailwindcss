@@ -41,7 +41,7 @@ export default function MobileJump({
           {links.links.map(function (link, id) {
             const data = { link, id };
             return (
-              <span key={id} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+              <span key={id}>
                 <a href={link.link}>{link.text}</a>
               </span>
             );

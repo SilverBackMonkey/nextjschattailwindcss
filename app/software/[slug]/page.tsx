@@ -115,6 +115,17 @@ const props = await getProps({ params });
   return (
 
       <div className="md:container mx-auto text-sky-700 dark:text-white">
+        <div className="py-6 px-1 mt-4">
+          <div className="container mx-auto">
+            <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
+              <span>
+                <Link href="/">AFC Home</Link>
+              </span>
+              <FaAngleRight />
+              <span>{data.software_name} Software</span>
+            </div>
+          </div>
+        </div>
 
         <section className="py-8  px-6">
           <div className="container mx-auto">

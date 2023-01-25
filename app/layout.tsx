@@ -3,6 +3,8 @@ import AuthContext from "./AuthContext";
 import Header from "./Header";
 import Footer from "../components/Footer";
 import { Analytics } from "@vercel/analytics/react";
+import { getCount, searchData } from "./lib/SearchFetch";
+
 export const metadata = {
   title: "AllFreeChips",
   description:
@@ -17,12 +19,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <html lang="en">
       <body>
         <div className="bg-white text-sky-700 dark:bg-zinc-800 dark:text-white">
           <AuthContext>
-            <Header />
+            <Header getData={searchData} getCount={getCount}/>
           </AuthContext>
           <div className="content" id="afc-main">
             {children}

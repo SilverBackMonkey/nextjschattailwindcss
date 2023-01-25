@@ -71,8 +71,20 @@ export default function NoDepositContent({ children }) {
   // const [pageNumber, setPageNumber] = useState<number>(1);
 
   return (
-    <div className="md:container mx-auto text-sky-700 dark:text-white">  
+    <div className="md:container mx-auto text-sky-700 dark:text-white">
+      <div className="py-6 px-1 mt-4">
       <FaqJsonLD data={faq} />
+        <div className="container mx-auto">
+          <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
+            <span>
+              <Link href="/">AFC Home</Link>
+            </span>
+            <FaAngleRight />
+            <span>No Deposit Casinos</span>
+          </div>
+        </div>
+      </div>
+
       <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">

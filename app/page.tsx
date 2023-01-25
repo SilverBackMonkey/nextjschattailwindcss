@@ -18,21 +18,16 @@ import GridGuide from "@/components/GridGuide";
 import Buttonlight from "@/components/Buttonlight";
 import CasinoDisplayList from "@/components/CasinoDisplayList";
 import { Metadata } from "next";
-export const revalidate = 300;
-export const dynamic = "error";
+
 export async function generateMetadata({ params }): Promise<Metadata> {
-  const Title =
-    "Best online casino bonus guide with " +
-    monthYear() +
-    " casino bonus codes";
-  const description =
-    monthYear() +
-    " online casino bonus codes along with detailed no deposit casino bonuses for USA and world wide players";
+  const Title = "Best online casino bonus guide with " + monthYear() + " casino bonus codes"
+  const description = monthYear() + " online casino bonus codes along with detailed no deposit casino bonuses for USA and world wide players"
   return {
     title: Title,
     description: description,
   };
 }
+
 
 async function getCasinos() {
   const data = await prisma.casino_p_casinos.findMany({
@@ -69,6 +64,7 @@ async function getCasinos() {
 }
 
 export default async function page() {
+  
   const casinos = await getCasinos();
   const cardData = {
     title: "Best US Casino",
@@ -88,16 +84,15 @@ export default async function page() {
         </h2>
       </div>
 
-      <CasinoSingleCard data={cardData} />
-      <Bonus data={casinos} />
+      <CasinoSingleCard data ={cardData} />
+      <Bonus data = {casinos} />
       <div className="m-4 md:mx-32 md:mt-28">
         <h4 className="text-2xl font-medium py-2 text-left md:text-5xl md:my-4">
           {"Exclusive online casino bonuses in " + monthYear()}
         </h4>
         <p className="font-medium text-justify md:text-2xl md:my-10">
           We bring you the top rated online casino bonuses targeted to your
-          location. Allfreechips also has the{" "}
-          <Link href="/casino-match">Casinomatch</Link> system where you can
+          location. Allfreechips also has the <Link href="/casino-match">Casinomatch</Link> system where you can
           further filter your very own casino top list and see updates daily.
         </p>
         <div className="px-2 md:py-2">
@@ -174,6 +169,7 @@ export default async function page() {
           you with the online casino guide and help you turn their promotional
           offers to your advantage.
         </p>
+     
       </div>
       <div className="text-left p-4 mt-2 md:text-2xl">
         <h3 className="text-2xl font-semibold md:text-5xl">

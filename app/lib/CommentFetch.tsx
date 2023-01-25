@@ -3,6 +3,7 @@ import React from 'react';
 
 export async function  getComment(type, parent) {
   "use server";
+  
   try{
     const comments:any = await prisma.comments.findMany({
       select: {
@@ -45,45 +46,36 @@ export async function getCountComment(type, parent) {
 
 export async function  addComment(comment) {
   "use server";
+  
   try{
-    const {type, parent, content} = comment;
-    const authorId = comment.authorId;
-    if(type==1) {
-      let newComment = await prisma.comments.create({
-        select: {
-          id: true,
-          content: true,
-          createdAt: true,
-          author: { select: { image: true, name: true, id: true, email: true } },
-        },
-        data:{
-          type:comment.type,
-          parentId:comment.parent,
-          author: { connect: { id: comment.authorId } },
-          content:comment.content,
-          casino_comments: {connect: {id: comment.parent}}
-        }
-      })
-      return newComment;
-    }
-    if(type == 2) {
-      let newComment = await prisma.comments.create({
-        select: {
-          id: true,
-          content: true,
-          createdAt: true,
-          author: { select: { image: true, name: true, id: true, email: true } },
-        },
-        data:{
-          type:comment.type,
-          parentId:comment.parent,
-          author: { connect: { id: comment.authorId } },
-          content:comment.content,
-          game_comments: {connect: {game_id: comment.parent}}
-        }
-      })
-      return newComment;
-    }
+    let newComment = await prisma.comments.create({
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        author: { select: { image: true, name: true, id: true, email: true } },
+      },
+      data:{
+        type:comment.type,
+        parentId:comment.parent,
+        author: { connect: { id: comment.authorId } },
+        content:comment.content
+      }
+    })
+
+    let result = await prisma.comments.findFirst({
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        author: { select: { image: true, name: true, id: true, email: true } },
+      },
+      where:{
+        id: newComment.id
+      }
+    })
+    console.log(result);
+    return result;
   }
   catch(error) {
     console.log(error)

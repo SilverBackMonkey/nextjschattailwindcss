@@ -1,12 +1,5 @@
-import { CommentView } from "@/app/components/Comment/view";
 import MobileJump from "@/app/components/MobileJump";
-import { RatingView } from "@/app/components/rating/view";
-import {
-  addComment,
-  getComment,
-  getCountComment
-} from "@/app/lib/CommentFetch";
-import { getRating, setRating } from "@/app/lib/RatingFetch";
+import MessageList from "@/app/chat/_Components/MessageList";
 import prisma from "@/client";
 import Author from "@/components/AboutAuthor";
 import BankOptions from "@/components/BankOptions";
@@ -17,30 +10,24 @@ import LikeCasinos from "@/components/LikeCasinos";
 import LikeSlots from "@/components/LikeSlots";
 import ProsCons from "@/components/ProsCons";
 import SoftwareProv from "@/components/SoftwareProv";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import cheerio from "cheerio";
 import { Metadata } from "next";
-import { getServerSession } from "next-auth/next";
 import Image from "next/legacy/image";
 import Link from "next/link";
-import { createElement, Fragment, Suspense } from "react";
 import { AiOutlineExclamation } from "react-icons/ai";
 import { BsArrowRightCircleFill, BsFillStarFill } from "react-icons/bs";
 import { CgMenuLeft } from "react-icons/cg";
+import { FaAngleRight } from "react-icons/fa";
 import { GrClose } from "react-icons/gr";
 import { VscStarEmpty } from "react-icons/vsc";
-import rehypeParse from "rehype-parse";
-import rehypeReact from "rehype-react";
-import { unified } from "unified";
-import { aggregateMessageLike } from '../../chat/_lib/utils';
-import { _avg } from '../../lib/Aggregation';
-import { getSession } from "next-auth/react";
+import { addComment, getComment, getCountComment } from "@/app/lib/CommentFetch";
+import Comment from "@/app/components/Comment";
 import { getLoginUser } from "@/app/lib/UserFetch";
+import Rating from "@/app/components/rating";
+import { getRating, setRating } from "@/app/lib/RatingFetch";
 
 async function getProps({ params }) {
   const slug = params.slug;
-
-
   const data: any = await prisma.casino_p_casinos.findFirst({
     where: { clean_name: slug },
     select: {
@@ -64,27 +51,6 @@ async function getProps({ params }) {
           bank_data: true,
         },
       },
-      casino_comments: {
-        select: {
-          id: true,
-          createdAt: true,
-          content: true,
-          author: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-          }},
-        },
-        orderBy:{
-          createdAt: 'desc'
-        }
-      },
-      casino_ratings: {
-        select: {
-          rating:true,
-        },
-      },
       review: {
         select: {
           description: true,
@@ -100,93 +66,37 @@ async function getProps({ params }) {
       },
     },
   });
-
-  // const user = await getLoginUser();
-  // const commentsData = await getComment(1, data.id);
-  // const totalCommentCount = await getCountComment(1, data.id);
-  // const myRating = _avg(data.casino_ratings);
-
   const swId: any = data.softwares
     .filter((x) => x.softwarelist.id > 0)
     .map((x) => x.softwarelist.id);
 
-  // const gamedata = await prisma.$queryRawUnsafe(
-  //   `SELECT s.software_name,g.game_name,g.game_clean_name,g.game_reels,g.game_lines,g.game_image FROM casino_p_games g
+  const gamedata = await prisma.$queryRawUnsafe(
+    `SELECT s.software_name,g.game_name,g.game_clean_name,g.game_reels,g.game_lines,g.game_image FROM casino_p_games g
       
-  //     LEFT JOIN casino_p_software s
-  //     ON g.game_software = s.id
-  //     LEFT JOIN casino_p_descriptions_games d
-  //     ON g.game_id = d.parent
-  //     WHERE game_software in (` +
-  //     swId +
-  //     `)
-  //     AND d.description != ''  
-  //     ORDER BY RANDOM ()
-  //     LIMIT 5`
-  // );
-
-  const gamedata = await prisma.casino_p_games.findMany({
-    select: {
-      game_name: true,
-      game_clean_name: true,
-      game_reels: true,
-      game_lines: true,
-      game_image: true,
-      software: {select: {software_name: true}},
-      game_ratings: {select: {rating: true}}
-    },
-    where: {
-      game_software: {
-        in: swId
-      },
-      review: {
-        every : {
-          description: {
-            not: ''
-          }
-        }
-      }
-    },
-    take: 5
-  })
-
+      LEFT JOIN casino_p_software s
+      ON g.game_software = s.id
+      LEFT JOIN casino_p_descriptions_games d
+      ON g.game_id = d.parent
+      WHERE game_software in (` +
+      swId +
+      `)
+      AND d.description != ''  
+      ORDER BY RANDOM ()
+      LIMIT 5`
+  );
   // Find 3 casinos that share the same software as the reviewd casino
-  // const casinodata: any[] = await prisma.$queryRawUnsafe(
-  //   `SELECT c.id FROM casino_p_casinos c
-  //   LEFT JOIN casino_p_software_link s 
-  //   on s.casino = c.id
-  //   WHERE s.software in (` +
-  //     swId +
-  //     `)
-  //     AND c.approved = 1
-  //     AND c.rogue = 0
-  //   ORDER BY RANDOM ()
-  //   LIMIT 5`
-  // );
-
-
-  const casinodata = await prisma.casino_p_casinos.findMany({
-    select: {
-      id: true,
-      casino_ratings: {select: {rating: true}}
-    },
-    where:{
-      softwares: {
-        every: {
-          software: {
-            in: swId
-          }
-        }
-      },
-      approved: {
-        equals: 1
-      },
-      rogue: {
-        equals: 0
-      }
-    },
-    take: 5
-  });
+  const casinodata: any[] = await prisma.$queryRawUnsafe(
+    `SELECT c.id FROM casino_p_casinos c
+    LEFT JOIN casino_p_software_link s 
+    on s.casino = c.id
+    WHERE s.software in (` +
+      swId +
+      `)
+      AND c.approved = 1
+      AND c.rogue = 0
+    ORDER BY RANDOM ()
+    LIMIT 5`
+  );
 
   const likeCasinoIds = casinodata.map((x) => x.id); // make a list of casinos that matched software
 
@@ -205,11 +115,6 @@ async function getProps({ params }) {
           position: "desc",
         },
       },
-      casino_ratings: {
-        select: {
-          rating: true
-        }
-      }
     },
     take: 3,
   });
@@ -234,7 +139,7 @@ async function getProps({ params }) {
   const pros = data.casino_pros;
   const cons = data.casino_cons;
   const prosCons = { pros, cons };
-  return { data, gamedata, bdata, faq, prosCons};
+  return { data, gamedata, bdata, faq, prosCons };
 }
 
 export async function generateMetadata({ params }): Promise<Metadata> {
@@ -243,18 +148,15 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   const Homepage =
     "https://www.allfreechips.com/image/games/" + data.homepageimage;
   return {
-    title: data.meta[0]?.title ?? data.casino + " Online Casino Review",
-    description:
-      data.meta[0]?.description ??
-      data.casino +
-        " Review : Casino bonus and online slots information from " +
-        data.casino,
+    title: data.meta[0]?.title ?? "Missing Title",
+    description: data.meta[0]?.description ?? "Missing Description",
     openGraph: { images: Homepage },
   };
 }
 
 export default async function Review({ params }) {
-
+  console.log('this is review');
+  console.log(params);
   const props = await getProps({ params });
   const firstBonus = props.data.bonuses.find((v) => v.deposit > 0);
   const faq = props.faq;
@@ -262,15 +164,7 @@ export default async function Review({ params }) {
   const data = props.data;
   const likeCasinoData = props.bdata;
   const gameList = props.gamedata;
-
-  const user : any = await getLoginUser();
-
-  const commentsData = data.casino_comments;
-
-  const totalCommentCount = commentsData.length;
-  const myRating = _avg(data.casino_ratings);
-  
-  const casinoReview = { __html: data.review[0]?.description };
+  const casinoReview = { __html: data.review[0].description };
 
   const buttondata = data.button;
   const bonuslist = data.bonuses;
@@ -278,7 +172,7 @@ export default async function Review({ params }) {
   const casinoid = data.id;
   const casinoData = { casinoid, casinoname };
   const gameListData = { gameList, casinoData };
-  const bankListItems = data.banklist;
+  const bankListItems = data.banklist
   const bankListData = { bankListItems, casinoData };
   const softwares = data.softwares;
   const softwaredata = { casinoname, softwares };
@@ -302,35 +196,13 @@ export default async function Review({ params }) {
     { link: "#LikeSlots", text: `Slots at ${data.casino}` },
     { link: "#faq", text: `${data.casino} FAQs` },
   ];
-
-  const { result: renderedReview } = await unified()
-    .use(rehypeParse, { fragment: true })
-    .use(rehypeReact, {
-      createElement,
-      Fragment,
-      components: {
-        a: function RenderedLink({ href, children, className, ...rest }) {
-          const canonical = "https://www.allfreechips.com";
-          if (href.startsWith(canonical)) {
-            href = href.slice(canonical.length);
-          }
-          return (
-            <Link
-              {...rest}
-              href={href}
-              className={`${
-                className || ""
-              } font-medium text-blue-600 dark:text-blue-500 hover:underline`}
-            >
-              {children}
-            </Link>
-          );
-        },
-      },
-    })
-    .process(casinoReview.__html);
+  let user = await getLoginUser();
+  console.log('this is user')
+  console.log(user);
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
+     
+
       <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">
@@ -345,6 +217,7 @@ export default async function Review({ params }) {
             </span>
             <span className="text-sky-600 dark:text-white">{reviewDate}</span>
           </div>
+   
         </div>
       </section>
 
@@ -358,10 +231,8 @@ export default async function Review({ params }) {
 
       <section className="flex flex-col mx-4 md:flex-row">
         <div className="hidden md:w-1/4 md:flex md:flex-col md:">
-          <div
-            className="md:flex md:flex-col"
-            style={{ position: "sticky", top: "140px" }}
-          >
+          <div className="md:flex md:flex-col" style={{position:"sticky", top:'140px'}}>
+
             <span className="text-lg font-medium p-4">ON THIS PAGE</span>
             <hr className="border-sky-700 dark:border-white w-60" />
             <span className="my-4 px-4 border-l-4 font-medium border-sky-700 dark:border-white">
@@ -476,28 +347,14 @@ export default async function Review({ params }) {
             <h1 id="CasinoReview" className="text-3xl font-semibold my-4">
               {data.casino} Review
             </h1>
-            <div className="text-lg font-normal">{renderedReview}</div>
+            <div
+              className="text-lg font-normal"
+              dangerouslySetInnerHTML={casinoReview}
+            ></div>
+            
+            <Rating userId={user?.id} type={1} parent={casinoid} getRating={getRating} addRating={setRating} />
 
-            <Suspense fallback={<></>}>              
-              <RatingView      
-                authorId={user?.id}
-                type={1}
-                parent={casinoid}
-                myRating={myRating}
-                addRating={setRating}
-              />
-            </Suspense>
-
-            <Suspense fallback={<></>}>
-              <CommentView
-                user={user}
-                type={1}
-                addComment={addComment}
-                parent={casinoid}
-                comments={commentsData}
-                totalCount={totalCommentCount}
-              />              
-            </Suspense>
+            <Comment type={1} addComment={addComment} parent={casinoid} user={user} getComment={getComment} getCountComment={getCountComment}/>
 
             <ProsCons data={prosCons} />
             <div className="text-lg font-normal">
@@ -507,14 +364,7 @@ export default async function Review({ params }) {
               <p id="LikeCasinos" className="my-4">
                 Casinos Like {data.casino}
               </p>
-              <LikeCasinos
-                data={likeCasinoData}
-                VscStarEmpty={<VscStarEmpty />}
-                BsFillStarFill={<BsFillStarFill />}
-                BsArrowRightCircleFill={
-                  <BsArrowRightCircleFill className="mx-4" />
-                }
-              />
+            <LikeCasinos data={likeCasinoData} VscStarEmpty={<VscStarEmpty/>} BsFillStarFill={<BsFillStarFill/>} BsArrowRightCircleFill ={<BsArrowRightCircleFill className="mx-4" />} />
             </div>
             <Faq data={faq} />
             <div className="text-lg font-normal">

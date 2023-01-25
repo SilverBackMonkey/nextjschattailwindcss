@@ -8,7 +8,6 @@ import OnIntervalFn from "./_lib/OnIntervalFn";
 import MessageList from "./_Components/MessageList";
 // import cache from 'memory-cache'
 import { Metadata } from "next";
-import { aggregateMessageLike } from "./_lib/utils";
 
 
 export async function generateMetadata({ params }): Promise<Metadata> {
@@ -36,7 +35,26 @@ export default async function Chat() {
     user = null;
   }
   const myId = user?.id;
-
+  function aggregateMessageLike(messages: any) {
+    
+    return messages.map(message => {
+      let temp:any = {};
+      temp['createdAt'] = message.createdAt;
+      temp['message'] = message.message;
+      temp['authorId'] = message.authorId;
+      temp['like'] = message.like;
+      temp['id'] = message.id;
+      temp['username'] = message.name;
+      temp['userImage'] = message.image;
+      temp['userRole'] = message.role;
+      temp['userEmail'] = message.email;
+  
+      temp['isLiked'] = false;
+      if(message?.likes?.length > 0) 
+        temp['isLiked'] = true;
+      return temp;
+    })
+  }
   async function updateMessage (message:any) {
     "use server";
     try {
