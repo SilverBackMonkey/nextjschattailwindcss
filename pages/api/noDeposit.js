@@ -3,7 +3,6 @@ import BonusFilter from "../../components/functions/bonusfilter";
 
 
 export default async function handler(req, res) {
-  console.log(req.query, "\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
   try {
     const data = await prisma.casino_p_casinos.findMany({
       where: {
@@ -38,7 +37,8 @@ export default async function handler(req, res) {
 
     res.status(200).json({ bonus: bonus });
   } catch (err) {
-    console.log(err);
+
+    console.log("This is deposit area.." + err);
   } finally {
     //await prisma.$disconnect(); We now use one connections
   }

@@ -15,13 +15,12 @@ const New = () => {
     <div className="bg-white text-sky-700 dark:bg-zinc-800 dark:text-white relative">
       <Header />
       <div className="md:container mx-auto text-sky-700 dark:text-white">
-        <div className="py-6 px-1 mt-28">
+        <div className="py-6 px-1 mt-4">
           <div className="container mx-auto">
             <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
               <span>
                 <Link href="/">AFC Home</Link>
               </span>
-
               <span>Allfreechips Discussions</span>
             </div>
             <main className='mx-auro my-16 flex w-full max-w-5xl flex-1 space-x-6 py-5 px-6'>
