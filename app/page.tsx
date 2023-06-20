@@ -14,9 +14,20 @@ import {
   FaGifts,
   FaGift,
 } from "react-icons/fa";
-import Faq from "@/components/faq";
 import GridGuide from "@/components/GridGuide";
 import Buttonlight from "@/components/Buttonlight";
+import CasinoDisplayList from "@/components/CasinoDisplayList";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const Title = "Best online casino bonus guide with " + monthYear() + " casino bonus codes"
+  const description = monthYear() + " online casino bonus codes along with detailed no deposit casino bonuses for USA and world wide players"
+  return {
+    title: Title,
+    description: description,
+  };
+}
+
 
 async function getCasinos() {
   const data = await prisma.casino_p_casinos.findMany({
@@ -53,6 +64,7 @@ async function getCasinos() {
 }
 
 export default async function page() {
+  
   const casinos = await getCasinos();
   const cardData = {
     title: "Best US Casino",
@@ -65,7 +77,7 @@ export default async function page() {
   };
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
-      <div className="py-6 px-1 mt-28">
+      <div className="py-6 px-1 mt-4">
         <div className="container mx-auto">
           <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
             <span>AFC Home</span>
@@ -87,6 +99,7 @@ export default async function page() {
 
       <h1>LOCATION </h1>
       <CasinoSingleCard data ={cardData} />
+      <CasinoDisplayList data ={casinos} />
       
       <Bonus data = {casinos} />
       <div className="m-4 md:mx-32 md:mt-28">
@@ -172,7 +185,7 @@ export default async function page() {
           you with the online casino guide and help you turn their promotional
           offers to your advantage.
         </p>
-        <Faq />
+     
       </div>
       <div className="text-left p-4 mt-2 md:text-2xl">
         <h3 className="text-2xl font-semibold md:text-5xl">

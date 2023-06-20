@@ -57,6 +57,7 @@ export async function isReadyForPlay(user: User): Promise<{
       createdAt: "desc",
     },
   });
+  
   const lastFreePlay = await prisma.scratchCardGame.findFirst({
     where: {
       user_id: user.id,

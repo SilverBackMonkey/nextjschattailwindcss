@@ -18,6 +18,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <html lang="en">
       <body>
@@ -26,7 +27,9 @@ export default function RootLayout({
             {/* @ts-expect-error Async Server Component */}
             <Header />
           </AuthContext>
-          {children}
+          <div className="content" id="afc-main">
+            {children}
+          </div>
           <Footer />
         </div>
         <Analytics />

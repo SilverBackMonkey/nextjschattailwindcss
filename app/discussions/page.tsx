@@ -11,7 +11,7 @@ export default async function Discussions() {
   return (
     <>
       <DiscussionContent myPosts={myPosts} />
-      <DiscussionRefresher intervalMs={2000} />
+      {/* <DiscussionRefresher intervalMs={2000} /> */}
     </>
   );
 }

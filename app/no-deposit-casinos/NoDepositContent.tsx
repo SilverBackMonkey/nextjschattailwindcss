@@ -13,13 +13,22 @@ import Faq from "../../components/faq";
 import FaqJsonLD from "../../components/FaqJsonLDX";
 import monthYear from "../../components/functions/monthYear";
 import ProsCons from "../../components/ProsCons";
-import MobileJump from "./MobileJump";
+import MobileJump from "../components/MobileJump";
 import { CgMenuLeft } from "react-icons/cg";
 import { GrClose } from "react-icons/gr";
 
 // import { FaAngleDown } from "react-icons/fa";
 // import { useState, useEffect } from "react";
 export default function NoDepositContent({ children }) {
+  const jumpTo = {
+    links: [
+      {
+        link: "#ProsCons",
+        text: "No Deposit Casino Pros and Cons",
+      },
+      { link: "#faq", text: "No Deposit Casino FAQ" },
+    ],
+  };
   const prosCons = {
     pros: [
       {
@@ -72,7 +81,7 @@ export default function NoDepositContent({ children }) {
         //    )}`}
         />
       </Head>
-      <div className="py-6 px-1 mt-28">
+      <div className="py-6 px-1 mt-4">
         <div className="container mx-auto">
           <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
             <span>
@@ -120,6 +129,7 @@ export default function NoDepositContent({ children }) {
         </div>
       </section>
       <MobileJump
+        links={jumpTo}
         left={
           <CgMenuLeft className="text-white dark:text-black mx-2 text-xl" />
         }
@@ -133,12 +143,14 @@ export default function NoDepositContent({ children }) {
             Our top picks
           </span>
           <div className="my-4 flex flex-col space-y-4">
-            <span>
-              <a href="#ProsCons">No Deposit Pros and Cons</a>
-            </span>
-            <span>
-              <a href="#faq">No Deposit Bonus FAQs</a>
-            </span>
+          {jumpTo.links.map(function (link, id) {
+            const data = { link, id };
+            return (
+              <span key={id}>
+                <a href= {link.link}>{link.text}</a>
+              </span>
+            );
+          })}
           </div>
         </div>
         <div className="lg:w-3/4  text-lg md:text-xl font-medium">

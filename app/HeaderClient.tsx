@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import { signIn, signOut } from "next-auth/react";
 import { CgMenuLeft } from "react-icons/cg";
 import { useSession } from "next-auth/react";
@@ -11,8 +11,37 @@ const HeaderClient = () => {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
   const isMounted = useIsMounted();
+  
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset;
+
+      if (prevScrollPos > currentScrollPos) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+
+      setPrevScrollPos(currentScrollPos);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [prevScrollPos]);
+
+  const headerClassName = `flex w-full top-0 left-0 justify-between px-12 lg:px-32 py-6 z-20 bg-white text-sky-700 dark:bg-zinc-800 dark:text-white border-b-2 ${
+    isScrolled ? 'sticky top-0' : ''
+  }`;
+
   return (
-    <div className="flex w-full fixed top-0 left-0 justify-between px-12 lg:px-32 py-6 z-20 bg-white text-sky-700 dark:bg-zinc-800 dark:text-white border-b-2">
+    <div id="afcHeader" className={headerClassName}>
       <div className="lg:min-w-fit lg:flex items-center justify-between py-4 lg:px-10 px-7">
         <div
           onClick={() => setOpen(!open)}
