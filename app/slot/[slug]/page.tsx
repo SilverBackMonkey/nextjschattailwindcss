@@ -14,12 +14,17 @@ import { CgMenuLeft } from "react-icons/cg";
 import Author from "@/components/AboutAuthor";
 import prisma from "@/client";
 import { Metadata } from "next";
+import FaqJsonLD from "@/components/FaqJsonLDX";
 
 export async function generateMetadata({ params }): Promise<Metadata> {
   const props = await getProps({ params });
 
-  const Title = props.data.meta[0]?.title ?? props.data.game_name + " Online slot machine review";
-  const description = props.data.meta[0]?.description ?? props.data.game_name + " Online slot machine review";
+  const Title =
+    props.data.meta[0]?.title ??
+    props.data.game_name + " Online slot machine review";
+  const description =
+    props.data.meta[0]?.description ??
+    props.data.game_name + " Online slot machine review";
   return {
     title: Title,
     description: description,
@@ -167,7 +172,8 @@ export default async function Review({ params }) {
   ];
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
-      <div className="py-6 px-1">
+      <FaqJsonLD data={faq} />
+      <div className="py-6 px-1 mt-28">
         <div className="container mx-auto">
           <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
             <span>
@@ -229,9 +235,11 @@ export default async function Review({ params }) {
       />
 
       <section className="flex flex-col mx-4 md:flex-row">
-        <div className="hidden md:w-1/4 md:flex md:flex-col md:">
-          <div className="md:flex md:flex-col" style={{position:"sticky", top:'140px'}}>
-
+        <div className="hidden lg:w-1/4 lg:flex lg:flex-col lg:">
+          <div
+            className="md:flex md:flex-col"
+            style={{ position: "sticky", top: "140px" }}
+          >
             <span className="text-lg font-medium p-4">ON THIS PAGE</span>
             <hr className="border-sky-700 dark:border-white w-60" />
             <span className="my-4 px-4 border-l-4 font-medium border-sky-700 dark:border-white">

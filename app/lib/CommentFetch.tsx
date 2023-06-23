@@ -3,8 +3,9 @@ import React from 'react';
 
 export async function  getComment(type, parent, count) {
   "use server";
-
   try{
+    console.log(type);
+    console.log(parent);
     const comments:any = await prisma.comments.findMany({
       select: {
         id: true,
@@ -30,7 +31,7 @@ export async function  getComment(type, parent, count) {
 
 export async function  addComment(comment) {
   "use server";
-  console.log(comment);
+  
   try{
     const newComment:any = await prisma.comments.create({
       data:{

@@ -26,7 +26,7 @@ interface Props {
     parent: string,
 }
 
-const CommentList = async ({type, parent}) => {
+const CommentList : React.FC<Props> = async ({type, parent}) => {
   ""
   // const comments = await getComment(type, parent);
 

@@ -19,16 +19,19 @@ import prisma from "@/client";
 import MobileJump from "../components/MobileJump";
 import { Metadata } from "next";
 export async function generateMetadata({ params }): Promise<Metadata> {
-    const Title =
-      "USA Online Casino Guide : " + monthYear() + " Full list of casinos you can play in the USA";
-    const description =
-      "Complete guide to Unites States online casinos, full USA casino guide as of " + monthYear();
-    return {
-      title: Title,
-      description: description,
-    };
-  }
-  
+  const Title =
+    "USA Online Casino Guide : " +
+    monthYear() +
+    " Full list of casinos you can play in the USA";
+  const description =
+    "Complete guide to Unites States online casinos, full USA casino guide as of " +
+    monthYear();
+  return {
+    title: Title,
+    description: description,
+  };
+}
+
 async function getProps({ params }) {
   const data = await prisma.casino_p_casinos.findMany({
     where: {
@@ -106,7 +109,6 @@ export default async function PageOut({ params }) {
     },
   ];
 
-
   const bdata = props.bonus;
   const author = "AFC Chris";
   const reviewDate = "";
@@ -114,13 +116,12 @@ export default async function PageOut({ params }) {
     "Chris Started working on Allfreechips in July of 2004, After many frustraiting years of learning how to make a webpage we now have the current site!  Chris started by being a player first, and loved online gaming so much he created the Allfreechips Community.";
   const authorData = { author, authorText };
   const links = [
-
     { link: "#ProsCons", text: `USA Casino Pros and Cons` },
     { link: "#faq", text: `USA Casino FAQs` },
   ];
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
-        <FaqJsonLD data = {faq} />
+      <FaqJsonLD data={faq} />
       <div className="py-6 px-1 mt-4">
         <div className="container mx-auto">
           <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
@@ -187,8 +188,8 @@ export default async function PageOut({ params }) {
       />
 
       <section className="flex flex-col mx-4 md:flex-row">
-        <div className="hidden md:w-1/4 md:flex md:flex-col md:">
-          <div className="md:flex md:flex-col" style={{position:"sticky", top:'140px'}}>
+      <div className="hidden lg:w-1/4 lg:flex lg:flex-col lg:">
+      <div className="md:flex md:flex-col" style={{position:"sticky", top:'140px'}}>
             <span className="text-lg font-medium p-4">ON THIS PAGE</span>
             <hr className="border-sky-700 dark:border-white w-60" />
             <span className="my-4 px-4 border-l-4 font-medium border-sky-700 dark:border-white">

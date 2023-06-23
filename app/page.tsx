@@ -119,7 +119,7 @@ export default async function page() {
             </p>
           </div>
           <p className="text-base font-medium py-4 text-left md:text-2xl md:font-normal">
-            Golden Lion Casino is a Great new platfoem featuring online slots
+            Golden Lion Casino is a Great new platform featuring online slots
             from Rival as well as Betsoft. Play slots for free or use the great
             $25 no deposit casino bonus right here to make some casino coin! We
             think Golden Lion casino is a great every day casino with loads of
@@ -158,7 +158,7 @@ export default async function page() {
           Allfreechips - Your source of casino codes and exclusive offers
         </h3>
         <p className="text-base font-medium my-6 text-justify  md:text-2xl">
-          How about trying your hand at microgaming, playing some slot machine,
+          How about trying your hand at Microgaming, playing some slot machine,
           or completing a Royal Flush without making any casino deposits? If any
           of these activities appeal to you, Allfreechips is the place you need.
           We are the source of unlimited bonuses and casino codes for cash, free

@@ -27,7 +27,6 @@ const MessageList: React.FC<props> = ({user, getMessages, like, updateMessage, r
     const [loading, setLoading] = useState(false);
     const [optimisticMessages, setOptimisticMessages] = useState<any[]>([]);
     const [initLoading, setInitLoading] = useState(true);
-    
     useEffect(() => {
         async function fetchMessages() {
             try {
@@ -56,7 +55,7 @@ const MessageList: React.FC<props> = ({user, getMessages, like, updateMessage, r
 
     const addOptimisticMessage = (message: any) => {
         message = {...message, sending: true};
-        let updatedMessages = optimisticMessages;   
+        let updatedMessages = optimisticMessages;
         updatedMessages.unshift(message);
         setOptimisticMessages(updatedMessages);
     }
@@ -84,9 +83,10 @@ const MessageList: React.FC<props> = ({user, getMessages, like, updateMessage, r
                     return message;
                 }
             })
-            setOptimisticMessages(updatedMessages);
+            setOptimisticMessages(updatedMessages);            
         }
         else {
+            console.log('this is sending message else')
             return;
         }
     }
@@ -115,6 +115,7 @@ const MessageList: React.FC<props> = ({user, getMessages, like, updateMessage, r
         let updatedMessages = optimisticMessages.filter(mes => mes.id != message.id);
         setOptimisticMessages(updatedMessages);            
         const res = removeMessage(message?.id);
+        console.log(res);
         setLoading(false);
     }
 

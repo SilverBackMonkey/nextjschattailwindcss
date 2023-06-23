@@ -72,16 +72,8 @@ export default function NoDepositContent({ children }) {
 
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
-      <Head>
-        <FaqJsonLD data={faq} />
-        <meta
-        //    property="og:image"
-        //    content={`https://www.allfreechips.com/image/software/${encodeURIComponent(
-        //      data.image
-        //    )}`}
-        />
-      </Head>
       <div className="py-6 px-1 mt-4">
+      <FaqJsonLD data={faq} />
         <div className="container mx-auto">
           <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
             <span>
@@ -137,6 +129,7 @@ export default function NoDepositContent({ children }) {
       />
       <section className="flex flex-col mx-4 md:flex-row">
         <div className="hidden lg:w-1/4 lg:flex lg:flex-col lg:">
+        <div className="md:flex md:flex-col" style={{position:"sticky", top:'140px'}}>
           <span className="text-lg font-medium p-4">ON THIS PAGE</span>
           <hr className="border-sky-700 dark:border-white w-60" />
           <span className="my-4 px-4 border-l-4 font-medium border-sky-700 dark:border-white">
@@ -152,6 +145,7 @@ export default function NoDepositContent({ children }) {
             );
           })}
           </div>
+        </div>
         </div>
         <div className="lg:w-3/4  text-lg md:text-xl font-medium">
           <div className="flex flex-col rounded-lg">

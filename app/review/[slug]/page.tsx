@@ -1,6 +1,6 @@
+import Comment from "@/app/components/Comment";
 import CommentList from "@/app/components/CommentList";
 import MobileJump from "@/app/components/MobileJump";
-import MessageList from "@/app/chat/_Components/MessageList";
 import prisma from "@/client";
 import Author from "@/components/AboutAuthor";
 import BankOptions from "@/components/BankOptions";
@@ -21,10 +21,7 @@ import { CgMenuLeft } from "react-icons/cg";
 import { FaAngleRight } from "react-icons/fa";
 import { GrClose } from "react-icons/gr";
 import { VscStarEmpty } from "react-icons/vsc";
-import { addComment, getComment } from "@/app/lib/CommentFetch";
-import Comment from "@/app/components/Comment";
-import { getLoginUser } from "@/app/lib/UserFetch";
-
+import FaqJsonLD from "@/components/FaqJsonLDX";
 async function getProps({ params }) {
   const slug = params.slug;
 
@@ -142,64 +139,61 @@ async function getProps({ params }) {
   return { data, gamedata, bdata, faq, prosCons };
 }
 
-// export async function generateMetadata({ params }): Promise<Metadata> {
-  // const props = await getProps({ params });
-  // const data = props.data;
-  // const Homepage =
-  //   "https://www.allfreechips.com/image/games/" + data.homepageimage;
-  // return {
-  //   title: data.meta[0]?.title ?? "Missing Title",
-  //   description: data.meta[0]?.description ?? "Missing Description",
-  //   openGraph: { images: Homepage },
-  // };
-// }
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const props = await getProps({ params });
+  const data = props.data;
+  const Homepage =
+    "https://www.allfreechips.com/image/games/" + data.homepageimage;
+  return {
+    title: data.meta[0]?.title ?? "Missing Title",
+    description: data.meta[0]?.description ?? "Missing Description",
+    openGraph: { images: Homepage },
+  };
+}
 
 export default async function Review({ params }) {
-  console.log('this is review');
-  console.log(params);
-  // const props = await getProps({ params });
-  // const firstBonus = props.data.bonuses.find((v) => v.deposit > 0);
-  // const faq = props.faq;
-  // const prosCons = props.prosCons;
-  // const data = props.data;
-  // const likeCasinoData = props.bdata;
-  // const gameList = props.gamedata;
-  // const casinoReview = { __html: data.review[0].description };
-  // const buttondata = data.button;
-  // const bonuslist = data.bonuses;
-  // const casinoname = data.casino;
-  // const casinoid = data.id;
-  // const casinoData = { casinoid, casinoname };
-  // const gameListData = { gameList, casinoData };
-  // const bankListItems = data.banklist;
-  // const bankListData = { bankListItems, casinoData };
-  // const softwares = data.softwares;
-  // const softwaredata = { casinoname, softwares };
-  // const author = "AFC Chris";
-  // const reviewDate = "";
-  // const authorText =
-  //   "Chris Started working on Allfreechips in July of 2004, After many frustraiting years of learning how to make a webpage we now have the current site!  Chris started by being a player first, and loved online gaming so much he created the Allfreechips Community.";
-  // const authorData = { author, authorText };
+  const props = await getProps({ params });
+  const firstBonus = props.data.bonuses.find((v) => v.deposit > 0);
+  const faq = props.faq;
+  const prosCons = props.prosCons;
+  const data = props.data;
+  const likeCasinoData = props.bdata;
+  const gameList = props.gamedata;
+  const casinoReview = { __html: data.review[0].description };
+  const buttondata = data.button;
+  const bonuslist = data.bonuses;
+  const casinoname = data.casino;
+  const casinoid = data.id;
+  const casinoData = { casinoid, casinoname };
+  const gameListData = { gameList, casinoData };
+  const bankListItems = data.banklist;
+  const bankListData = { bankListItems, casinoData };
+  const softwares = data.softwares;
+  const softwaredata = { casinoname, softwares };
+  const author = "AFC Chris";
+  const reviewDate = "";
+  const authorText =
+    "Chris Started working on Allfreechips in July of 2004, After many frustraiting years of learning how to make a webpage we now have the current site!  Chris started by being a player first, and loved online gaming so much he created the Allfreechips Community.";
+  const authorData = { author, authorText };
 
-  // const casinoLink =
-  //   "https://www.allfreechips.com/play_casino" + data.id + ".html";
-  // const bonusdata = { buttondata, bonuslist, casinoname };
-  // const Homepage =
-  //   "https://www.allfreechips.com/image/games/" + data.homepageimage;
+  const casinoLink =
+    "https://www.allfreechips.com/play_casino" + data.id + ".html";
+  const bonusdata = { buttondata, bonuslist, casinoname };
+  const Homepage =
+    "https://www.allfreechips.com/image/games/" + data.homepageimage;
 
-  // const links = [
-  //   { link: "#bonusList", text: `${data.casino} Bonuses` },
-  //   { link: "#CasinoReview", text: `${data.casino} Review` },
-  //   { link: "#ProsCons", text: `${data.casino} Pros and Cons` },
-  //   { link: "#LikeCasinos", text: `Casinos Like ${data.casino}` },
-  //   { link: "#LikeSlots", text: `Slots at ${data.casino}` },
-  //   { link: "#faq", text: `${data.casino} FAQs` },
-  // ];
-  let user = await getLoginUser();
-  console.log(user);
+  const links = [
+    { link: "#bonusList", text: `${data.casino} Bonuses` },
+    { link: "#CasinoReview", text: `${data.casino} Review` },
+    { link: "#ProsCons", text: `${data.casino} Pros and Cons` },
+    { link: "#LikeCasinos", text: `Casinos Like ${data.casino}` },
+    { link: "#LikeSlots", text: `Slots at ${data.casino}` },
+    { link: "#faq", text: `${data.casino} FAQs` },
+  ];
+
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
-      <div className="py-6 px-1">
+      <div className="py-6 px-1 mt-28">
         <div className="container mx-auto">
           <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
             <span>
@@ -210,12 +204,12 @@ export default async function Review({ params }) {
               <Link href="/review">Reviews</Link>
             </span>
             <FaAngleRight />
-            {/* <span className="text-slate-500">{data.casino}</span> */}
+            <span className="text-slate-500">{data.casino}</span>
           </div>
         </div>
       </div>
 
-      {/* <section className="py-8  px-6">
+      <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">
             {data.casino} Casino Review 2022
@@ -258,12 +252,14 @@ export default async function Review({ params }) {
         left={
           <CgMenuLeft className="text-white dark:text-black mx-2 text-xl" />
         }
-      /> */}
-{/* 
-      <section className="flex flex-col mx-4 md:flex-row">
-        <div className="hidden md:w-1/4 md:flex md:flex-col md:">
-          <div className="md:flex md:flex-col" style={{position:"sticky", top:'140px'}}>
+      />
 
+      <section className="flex flex-col mx-4 md:flex-row">
+        <div className="hidden lg:w-1/4 lg:flex lg:flex-col lg:">
+          <div
+            className="md:flex md:flex-col"
+            style={{ position: "sticky", top: "140px" }}
+          >
             <span className="text-lg font-medium p-4">ON THIS PAGE</span>
             <hr className="border-sky-700 dark:border-white w-60" />
             <span className="my-4 px-4 border-l-4 font-medium border-sky-700 dark:border-white">
@@ -382,7 +378,9 @@ export default async function Review({ params }) {
               className="text-lg font-normal"
               dangerouslySetInnerHTML={casinoReview}
             ></div>
-            
+
+            <CommentList type={1} parent={params?.slug} />
+
             <ProsCons data={prosCons} />
             <div className="text-lg font-normal">
               <h3 className="text-3xl font-semibold my-6 md:text-4xl md:my-10">
@@ -391,7 +389,14 @@ export default async function Review({ params }) {
               <p id="LikeCasinos" className="my-4">
                 Casinos Like {data.casino}
               </p>
-            <LikeCasinos data={likeCasinoData} VscStarEmpty={<VscStarEmpty/>} BsFillStarFill={<BsFillStarFill/>} BsArrowRightCircleFill ={<BsArrowRightCircleFill className="mx-4" />} />
+              <LikeCasinos
+                data={likeCasinoData}
+                VscStarEmpty={<VscStarEmpty />}
+                BsFillStarFill={<BsFillStarFill />}
+                BsArrowRightCircleFill={
+                  <BsArrowRightCircleFill className="mx-4" />
+                }
+              />
             </div>
             <Faq data={faq} />
             <div className="text-lg font-normal">
@@ -406,11 +411,8 @@ export default async function Review({ params }) {
             <Author data={authorData} />
           </div>
         </div>
-      </section> */}
-      <section className="bg-white dark:bg-gray-900 py-4 lg:py-8">
-        <Comment type={1} addComment={addComment} parent={4321} user={user} getComment={getComment}/>
-
       </section>
+
     </div>
   );
 }

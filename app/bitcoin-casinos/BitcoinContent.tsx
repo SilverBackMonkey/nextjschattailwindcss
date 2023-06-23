@@ -166,6 +166,7 @@ export default function BitcoinContent(props) {
     
     <section className="flex flex-col mx-4 md:flex-row">
       <div className="hidden lg:w-1/4 lg:flex lg:flex-col lg:">
+      <div className="md:flex md:flex-col" style={{position:"sticky", top:'140px'}}>
         <span className="text-lg font-medium p-4">ON THIS PAGE</span>
         <hr className="border-sky-700 dark:border-white w-60" />
         <span className="my-4 px-4 border-l-4 font-medium border-sky-700 dark:border-white">
@@ -181,6 +182,7 @@ export default function BitcoinContent(props) {
           <span>
             <Link href="#LikeCasinos">Bitcoin Casinos</Link>
           </span>
+        </div>
         </div>
       </div>
       <div className="lg:w-3/4  text-lg md:text-xl font-medium">

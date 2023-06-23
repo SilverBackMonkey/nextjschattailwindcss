@@ -7,13 +7,13 @@ import { Comments } from '.prisma/client';
 interface Props {
     user: any,
     type: number,
-    parent: number,
+    parent: string,
     addComment: (comment) => void,
-    getComment: (type: number, parent: number, count: number ) => any,
+    getComment: (type: number, parent: string, count: number ) => any,
 }
 const Comment: React.FC<Props> = ({user, type, parent, addComment, getComment}) =>  {
     const authorId = user.id;
-    const [canRate, setCanRate] = useState(false);
+
     const [content, setContent] = useState('');
     const [optimisticComments, setOptimisticComments] = useState<any[]>([]);
     
@@ -49,10 +49,9 @@ const Comment: React.FC<Props> = ({user, type, parent, addComment, getComment}) 
 
     const submitForm = async () => {
         if(content && content != ''){
-            debugger;
-            let comment = {type: type, parent: parent, content: content, authorId: authorId, createdAt: new Date()};
+            let comment = {type: type, parent: parent, content: content, authorId: authorId};
 
-            // addOptimisticComment(comment)
+            addOptimisticComment(comment)
             
             const addedComment : any = await addComment(comment);
         }
@@ -86,7 +85,7 @@ const Comment: React.FC<Props> = ({user, type, parent, addComment, getComment}) 
                   </div>
             </form>}
             {optimisticComments && optimisticComments.map(comment => 
-              <article key={comment?.createdAt?.toLocaleString()} className="p-6 mb-6 text-base bg-white border-t border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+              <article key={comment?.createdAt.toLocaleString()} className="p-6 mb-6 text-base bg-white border-t border-gray-200 dark:border-gray-700 dark:bg-gray-900">
                 <footer className="flex justify-between items-center mb-2">
                     <div className="flex items-center">
                         <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white"><img className="mr-2 w-6 h-6 rounded-full" src={comment?.author?.image} alt={comment?.author?.name} />{comment?.author?.name}</p>
@@ -123,7 +122,6 @@ const Comment: React.FC<Props> = ({user, type, parent, addComment, getComment}) 
                 </div>
             </article>
             )}
-            
         </div>
     );
 }
