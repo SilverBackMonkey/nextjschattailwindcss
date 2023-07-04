@@ -9,12 +9,11 @@ function LikeSlots(props) {
   const casinoId = props.data.casinoData.casinoid;
   const bonusLink =
     "https://www.allfreechips.com/play_casino" + casinoId + ".html";
-  // console.log(games);
   return (
     <>
       {games?.map((g) => (
         <div
-          key={g.game_clean_name}
+          key={g.game_id}
           className="flex flex-col rounded-2xl md:flex-row border-2 items-center p-6 my-6 md:px-20 justify-between"
         >
           <span>

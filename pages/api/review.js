@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import cheerio from "cheerio";
 import BonusFilter from "../../components/functions/bonusfilter";
-const prisma = new PrismaClient();
 
+ 
 export default async function handler(req, res) {
   try {
     const slug = req.query.slug;
@@ -135,7 +135,5 @@ export default async function handler(req, res) {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error" });
-  } finally {
-    await prisma.$disconnect();
   }
 }

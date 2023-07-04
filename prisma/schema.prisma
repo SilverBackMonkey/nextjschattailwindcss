@@ -8,20 +8,22 @@ datasource db {
 }
 
 model ChatMessage {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
   message   String
   authorId  String
   like      Int      @default(0)
-
-  author User @relation(fields: [authorId], references: [id])
+  likes   tb_pbot[]
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 model tb_pbot {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
+  id        String      @id @default(cuid())
+  createdAt DateTime    @default(now())
   messageId String
   authorId  String
+  message   ChatMessage   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 model Post {
@@ -42,13 +44,32 @@ model Comments {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   type      Int?
-  parentId    String?
+  parentId  Int?
   postId    String?
   content   String?
   published Boolean  @default(false)
   authorId  String
-  author    User?    @relation(fields: [authorId], references: [id])
-  posts     Post?    @relation(fields: [postId], references: [id])
+  casinoId  Int?
+  gameId    Int?
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  posts     Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  casino_comments   casino_p_casinos?   @relation(fields: [casinoId], references: [id], onDelete: Cascade)
+  game_comments     casino_p_games?     @relation(fields: [gameId], references: [game_id], onDelete: Cascade)
+}
+
+model Rating {
+  id        	String   @id @default(cuid())
+  createdAt 	DateTime @default(now())
+  type      	Int?
+  parentId    	Int?
+  rating   	Int?
+  published 	Boolean  @default(false)
+  authorId  	String
+  casinoId  	Int?
+  gameId     	Int?
+  casino_ratings    casino_p_casinos?  @relation(fields: [casinoId], references: [id], onDelete: Cascade)
+  game_ratings      casino_p_games?    @relation(fields: [gameId], references: [game_id], onDelete: Cascade)
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 model Account {
@@ -72,6 +93,8 @@ model Account {
   @@map("accounts")
 }
 
+
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
@@ -83,27 +106,34 @@ model Session {
 }
 
 model User {
-  id            String            @id @default(cuid())
-  name          String?
-  email         String?           @unique
-  emailVerified DateTime?         @map("email_verified")
-  image         String?
-  createdAt     DateTime          @default(now()) @map("created_at")
-  updatedAt     DateTime          @updatedAt @map("updated_at")
-  user_lvl      String?
-  isAdmin       Boolean           @default(false)
-  role          Int               @default(1)
-  afcRewards    Int               @default(0)
-  posts         Post[]
-  accounts      Account[]
-  sessions      Session[]
-  scratchCard   ScratchCardGame[]
-  comments      Comments[]
-
+  id               String             @id @default(cuid())
+  name             String?
+  email            String?            @unique
+  emailVerified    DateTime?          @map("email_verified")
+  image            String?
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  user_lvl         String?
+  isAdmin          Boolean            @default(false)
+  role             Int                @default(1)
+  afcRewards       Int                @default(0)
+  posts            Post[]
+  accounts         Account[]
+  sessions         Session[]
+  scratchCard      ScratchCardGame[]
+  comments         Comments[]
+  ratings          Rating[]
   chatMessages     ChatMessage[]
   ScratchCardAward ScratchCardAward[]
-
+  tb_pbots tb_pbot[]
   @@map("users")
+}
+
+model vb_user {
+  userid   String  @id @default(cuid())
+  username String?
+  email    String? @unique
+  user_afc Int     @default(0)
 }
 
 model ScratchCardGame {
@@ -130,13 +160,6 @@ model ScratchCardAward {
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-}
-
-model AfcDetails {
-  id         String  @id @default(cuid())
-  name       String?
-  email      String? @unique
-  adcRewards Int?
 }
 
 model VerificationToken {
@@ -191,6 +214,8 @@ model casino_p_casinos {
   casino_faq     casino_p_casino_faq[]
   casino_pros    casino_p_casino_pros[]
   casino_cons    casino_p_casino_cons[]
+  casino_ratings Rating[]
+  casino_comments       Comments[]
 }
 
 model casino_p_meta_casinos {
@@ -220,7 +245,7 @@ model casino_p_descriptions_casinos {
   type             Int?
   description_link String?
   record           String?
-  review           casino_p_casinos @relation(fields: [parent], references: [id], map: "description_casino_fk")
+  review           casino_p_casinos @relation(fields: [parent], references: [id], onDelete: Cascade, map: "description_casino_fk")
 }
 
 model casino_p_descriptions_games {
@@ -297,6 +322,8 @@ model casino_p_games {
   game_faq               casino_p_games_faq[]
   game_pros              casino_p_games_pros[]
   game_cons              casino_p_games_cons[]
+  game_ratings           Rating[]
+  game_comments          Comments[]
 }
 
 model casino_p_pages {

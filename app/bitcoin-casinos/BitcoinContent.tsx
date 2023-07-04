@@ -98,17 +98,7 @@ export default function BitcoinContent(props) {
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
       <FaqJsonLD data = {faq} />
-    <div className="py-6 px-1">
-      <div className="container mx-auto">
-        <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
-          <span>
-            <Link href="/">AFC Home</Link>
-          </span>
-          <FaAngleRight />
-          <span>Bitcoin Casinos</span>
-        </div>
-      </div>
-    </div>
+    
 
     <section className="py-8  px-6">
       <div className="container mx-auto">
@@ -191,7 +181,6 @@ export default function BitcoinContent(props) {
             Bitcoin online casinos
           </h3>
           <CasinoSingleCard data ={cardData} />
-          <CasinoCard data = {bdata} />
           <CasinoDisplayList data = {bdata} />
            
         

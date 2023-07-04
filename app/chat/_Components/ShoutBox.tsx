@@ -1,6 +1,5 @@
 "use client";
 import React, { useRef } from "react";
-import prisma from "../../../client";
 
 //// @ts-expect-error
 import { lazy, useState, useEffect } from 'react';
