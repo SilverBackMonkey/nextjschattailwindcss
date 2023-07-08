@@ -49,6 +49,15 @@ export async function Scratcher() {
     <main>
       <form action={play}>
         <div className="lg:w-11/12 md:w-90 m-5" style={{backgroundImage:'url("/bg.png")'}}>
+          {/* <div className="w-100">
+            <Image
+              className="mx-auto"
+              src="https://www.allfreechips.com/image/i/schead.png"
+              width={400}
+              height={40}
+              alt="AFC Scratch Card"
+            />
+          </div> */}
           <div className="text-center p-10">
               <Image
               className="mx-auto"
@@ -64,24 +73,23 @@ export async function Scratcher() {
                 .map((_, idx) => (
 
                   <div  key={idx} className="bg-white duration-500 rounded-2xl mb-2 md:h-auto mb-2  shadow-lg lg:transform  hover:scale-105 -translate-y-6">
-                    <picture>
-                      <img
-                        className={`lg:w-28 lg:h-28 md:w-24 md:h-24 sm:w-20 sm:h-20 object-cover rounded-xl ${
-                          lastOutcome != null &&
-                          lastOutcome.table[idx] === lastOutcome.prize
-                            ? "bg-slate-300"
-                            : ""
-                        }`}
-                        src={
-                          canPlay && isFreePlay
-                            ? `data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==`
-                            : lastOutcome != null
-                            ? lastOutcome.table[idx]
-                            : `data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7`
-                        }
-                        alt="Icon"
-                      />
-                    </picture>
+
+                    <img
+                      className={`lg:w-28 lg:h-28 md:w-24 md:h-24 sm:w-20 sm:h-20 object-cover rounded-xl ${
+                        lastOutcome != null &&
+                        lastOutcome.table[idx] === lastOutcome.prize
+                          ? "bg-slate-300"
+                          : ""
+                      }`}
+                      src={
+                        canPlay && isFreePlay
+                          ? `data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==`
+                          : lastOutcome != null
+                          ? lastOutcome.table[idx]
+                          : `data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7`
+                      }
+                      alt="Icon"
+                    />
                   </div>
                 ))}
           </section> 

@@ -39,7 +39,7 @@ function BonusItem(props) {
           var bonusValue = currency + d.nodeposit;
         }
         if (d.deposit) {
-          var bname = d.percent + "%";
+          var bname = "Match";
           var bnameTwo = "Bonus";
           var bonusValue = currency + d.deposit;
         }

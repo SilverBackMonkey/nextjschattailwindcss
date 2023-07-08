@@ -15,12 +15,6 @@ import Author from "@/components/AboutAuthor";
 import prisma from "@/client";
 import { Metadata } from "next";
 import FaqJsonLD from "@/components/FaqJsonLDX";
-import Comment from "@/app/components/Comment";
-import { addComment, getComment, getCountComment } from "@/app/lib/CommentFetch";
-import { getLoginUser } from "@/app/lib/UserFetch";
-import Rating from "@/app/components/rating";
-import { getRating, setRating } from "@/app/lib/RatingFetch";
-import SlotSlider from "@/components/SlotSlider";
 
 export async function generateMetadata({ params }): Promise<Metadata> {
   const props = await getProps({ params });
@@ -78,6 +72,7 @@ async function getProps({ params }) {
       },
     },
   });
+  //console.log(data);
   const swId = data.software.id;
 
   const gamedata = await prisma.$queryRawUnsafe(
@@ -175,11 +170,25 @@ export default async function Review({ params }) {
     { link: "#LikeSlots", text: `Slots Like ${data.game_name}` },
     { link: "#faq", text: `${data.game_name} FAQs` },
   ];
-  let user = await getLoginUser();
-
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
-      <FaqJsonLD data={faq} />      
+      <FaqJsonLD data={faq} />
+      <div className="py-6 px-1 mt-28">
+        <div className="container mx-auto">
+          <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
+            <span>
+              <Link href="/">AFC Home</Link>
+            </span>
+            <FaAngleRight />
+            <span>
+              <Link href="/slot/">Reviews</Link>
+            </span>
+            <FaAngleRight />
+            <span className="text-slate-500">{data.game_name}</span>
+          </div>
+        </div>
+      </div>
+
       <section className="py-8  px-6">
         <div className="container mx-auto">
           <h1 className="text-4xl md:text-5xl font-semibold border-b border-blue-800 dark:border-white pb-12">
@@ -194,7 +203,26 @@ export default async function Review({ params }) {
             </span>
             <span className="text-sky-600 dark:text-white">{reviewDate}</span>
           </div>
-      
+          <div className="bg-slate-100 dark:bg-gray-200 dark:text-black rounded-xl mt-3">
+            <div className="card p-4">
+              <div className="heading flex items-center border-b gap-7 pb-4">
+                <button className="w-10 h-7 rounded bg-sky-700 dark:bg-zinc-800"></button>
+                <h2 className="text-lg">
+                  Why you can trust{" "}
+                  <span className="font-bold">allfreechips.com</span>
+                </h2>
+                <a href="#">
+                  <i className="bi bi-info-circle"></i>
+                </a>
+              </div>
+              <p className="font-normal pt-4 pb-2 text-justify md:text-xl md:p-6">
+                Allfreechips is dedicated to bringing the best and latest online
+                casino bonus information. We rely on your input to insure the
+                casinos listed here are both correct and on the level by leaving
+                your reviews.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -229,7 +257,7 @@ export default async function Review({ params }) {
 
         <div className="md:w-3/4  text-lg md:text-xl font-medium">
           <p className="py-4">AT A GLANCE</p>
-          <SlotSlider imgs={data.game_images} game_id={data.game_id} />     
+
           <div className="flex flex-col rounded-lg">
             <p className="py-4 font-bold my-4 md:my-8">
               Slot Details of the {data.game_name} Slot Machine
@@ -244,11 +272,6 @@ export default async function Review({ params }) {
               className="text-lg font-normal"
               dangerouslySetInnerHTML={gameReview}
             ></div>
-
-            <Rating userId={user?.id} type={2} parent={casinoid} getRating={getRating} addRating={setRating} />
-
-            <Comment type={2} addComment={addComment} parent={casinoid} user={user} getComment={getComment} getCountComment={getCountComment}/>
-
             <ProsCons data={prosCons} />
             <div className="text-lg font-normal">
               <h3 className="text-3xl font-semibold my-6 md:text-4xl md:my-10">

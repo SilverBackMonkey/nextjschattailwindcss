@@ -13,9 +13,8 @@ model ChatMessage {
   message   String
   authorId  String
   like      Int      @default(0)
-  likes   tb_pbot[]
-  author User @relation(fields: [authorId], references: [id])
 
+  author User @relation(fields: [authorId], references: [id])
 }
 
 model tb_pbot {
@@ -23,7 +22,6 @@ model tb_pbot {
   createdAt DateTime @default(now())
   messageId String
   authorId  String
-  message   ChatMessage   @relation(fields: [messageId], references: [id])
 }
 
 model Post {
@@ -44,7 +42,7 @@ model Comments {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   type      Int?
-  parentId    Int?
+  parentId    String?
   postId    String?
   content   String?
   published Boolean  @default(false)
@@ -74,17 +72,6 @@ model Account {
   @@map("accounts")
 }
 
-model Rating {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  type      Int?
-  parentId    Int?
-  rating   Int?
-  published Boolean  @default(false)
-  authorId  String
-  author    User?    @relation(fields: [authorId], references: [id])
-}
-
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
@@ -112,19 +99,11 @@ model User {
   sessions      Session[]
   scratchCard   ScratchCardGame[]
   comments      Comments[]
-  ratings       Rating[]
+
   chatMessages     ChatMessage[]
   ScratchCardAward ScratchCardAward[]
 
   @@map("users")
-}
-
-model vb_user {
-  userid            String            @id @default(cuid())
-  username          String?
-  email         String?           @unique
-  user_afc      Int               @default(0)
-
 }
 
 model ScratchCardGame {
@@ -151,6 +130,13 @@ model ScratchCardAward {
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model AfcDetails {
+  id         String  @id @default(cuid())
+  name       String?
+  email      String? @unique
+  adcRewards Int?
 }
 
 model VerificationToken {

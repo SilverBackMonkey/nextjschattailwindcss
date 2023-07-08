@@ -17,7 +17,7 @@ const GridGuide = () => {
         Welcome to the 2023 version of the Allfreechips online casino guide. We will deliver the fastest access to online casios for both mobile and PC gamblers, not only very fast but the very best casinos of 2023.
       </p>
       <div className="grid grid-cols-2 md:grid md:grid-cols-3">
-        <Link href="/best-online-casinos">
+        <Link href="/best-casinos">
           <Casino
             icon={<FaMedal className="text-4xl" />}
             title={"Best Online Casinos"}

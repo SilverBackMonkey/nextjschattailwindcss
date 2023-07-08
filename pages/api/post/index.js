@@ -11,6 +11,7 @@ export default async function handle(req, res) {
   
   // test email
 
+  const email = "kennystewart@email.com";
   
   const result = await prisma.post.create({
     data: {
@@ -19,8 +20,8 @@ export default async function handle(req, res) {
       vote_down: 35,
       vote_down:2,
       added:'fdsa',
-      author: { connect: { email: session?.user?.email } },
-      // author: { connect: { email: email } }
+      // author: { connect: { email: session?.user?.email } },
+      author: { connect: { email: email } }
     },
   });
   res.json(result);

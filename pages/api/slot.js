@@ -1,7 +1,7 @@
-
+import { PrismaClient } from "@prisma/client";
 import cheerio from "cheerio";
 import BonusFilter from "../../components/functions/bonusfilter";
-import { Prisma } from "@prisma/client";
+const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   try {

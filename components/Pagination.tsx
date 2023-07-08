@@ -54,7 +54,6 @@ function PaginationNav1({
                 active={pageIndex === pageIndexToMap} disabled={undefined}        />
       </li>
     ));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageCount, pageIndex]);
   return (
     <ul className="flex gap-2">

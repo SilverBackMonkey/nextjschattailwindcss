@@ -1,4 +1,3 @@
-"use client"
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -20,14 +19,12 @@ const SlotSlider = ({ imgs, game_id }) => {
     dynamicHeight: true,
     emulateTouch: true,
     showThumbs: false,
-    centerMode: true,
   };
   return (
-    <div className ="border items-center border-gray-300 p-6 rounded my-4">
     <Carousel {...settings}>
       {imgs?.map((image, index) => (
         // eslint-disable-next-line react/jsx-no-comment-textnodes
-        <div className="p-6" key={index}>
+        <div key={index}>
           <img
             src={`https://www.allfreechips.com/image/slots/${encodeURIComponent(
               image.game_image_url
@@ -39,7 +36,6 @@ const SlotSlider = ({ imgs, game_id }) => {
           />
         </div>
       ))}
-     
       {/* <Link
         href={`https://democasino.betsoftgaming.com/cwguestlogin.do?bankId=675&gameId=637`}
         rel="nofollow"
@@ -53,7 +49,6 @@ const SlotSlider = ({ imgs, game_id }) => {
         </div>
       </Link> */}
     </Carousel>
-    </div>
   );
 };
 export default SlotSlider;

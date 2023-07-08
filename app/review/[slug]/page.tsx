@@ -1,5 +1,6 @@
+import Comment from "@/app/components/Comment";
+import CommentList from "@/app/components/CommentList";
 import MobileJump from "@/app/components/MobileJump";
-import MessageList from "@/app/chat/_Components/MessageList";
 import prisma from "@/client";
 import Author from "@/components/AboutAuthor";
 import BankOptions from "@/components/BankOptions";
@@ -20,14 +21,10 @@ import { CgMenuLeft } from "react-icons/cg";
 import { FaAngleRight } from "react-icons/fa";
 import { GrClose } from "react-icons/gr";
 import { VscStarEmpty } from "react-icons/vsc";
-import { addComment, getComment, getCountComment } from "@/app/lib/CommentFetch";
-import Comment from "@/app/components/Comment";
-import { getLoginUser } from "@/app/lib/UserFetch";
-import Rating from "@/app/components/rating";
-import { getRating, setRating } from "@/app/lib/RatingFetch";
-
+import FaqJsonLD from "@/components/FaqJsonLDX";
 async function getProps({ params }) {
   const slug = params.slug;
+
   const data: any = await prisma.casino_p_casinos.findFirst({
     where: { clean_name: slug },
     select: {
@@ -155,8 +152,6 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 }
 
 export default async function Review({ params }) {
-  console.log('this is review');
-  console.log(params);
   const props = await getProps({ params });
   const firstBonus = props.data.bonuses.find((v) => v.deposit > 0);
   const faq = props.faq;
@@ -165,14 +160,13 @@ export default async function Review({ params }) {
   const likeCasinoData = props.bdata;
   const gameList = props.gamedata;
   const casinoReview = { __html: data.review[0].description };
-
   const buttondata = data.button;
   const bonuslist = data.bonuses;
   const casinoname = data.casino;
   const casinoid = data.id;
   const casinoData = { casinoid, casinoname };
   const gameListData = { gameList, casinoData };
-  const bankListItems = data.banklist
+  const bankListItems = data.banklist;
   const bankListData = { bankListItems, casinoData };
   const softwares = data.softwares;
   const softwaredata = { casinoname, softwares };
@@ -196,12 +190,24 @@ export default async function Review({ params }) {
     { link: "#LikeSlots", text: `Slots at ${data.casino}` },
     { link: "#faq", text: `${data.casino} FAQs` },
   ];
-  let user = await getLoginUser();
-  console.log('this is user')
-  console.log(user);
+
   return (
     <div className="md:container mx-auto text-sky-700 dark:text-white">
-     
+      <div className="py-6 px-1 mt-28">
+        <div className="container mx-auto">
+          <div className="flex text-sm gap-1 font-medium  items-center md:gap-4">
+            <span>
+              <Link href="/">Online Casinos</Link>
+            </span>
+            <FaAngleRight />
+            <span>
+              <Link href="/review">Reviews</Link>
+            </span>
+            <FaAngleRight />
+            <span className="text-slate-500">{data.casino}</span>
+          </div>
+        </div>
+      </div>
 
       <section className="py-8  px-6">
         <div className="container mx-auto">
@@ -217,7 +223,26 @@ export default async function Review({ params }) {
             </span>
             <span className="text-sky-600 dark:text-white">{reviewDate}</span>
           </div>
-   
+          <div className="bg-slate-100 dark:bg-gray-200 dark:text-black rounded-xl mt-3">
+            <div className="card p-4">
+              <div className="heading flex items-center border-b gap-7 pb-4">
+                <button className="w-10 h-7 rounded bg-sky-700 dark:bg-zinc-800"></button>
+                <h2 className="text-lg">
+                  Why you can trust{" "}
+                  <span className="font-bold">allfreechips.com</span>
+                </h2>
+                <a href="#">
+                  <i className="bi bi-info-circle"></i>
+                </a>
+              </div>
+              <p className="font-normal pt-4 pb-2 text-justify md:text-xl md:p-6">
+                Allfreechips is dedicated to bringing the best and latest online
+                casino bonus information. We rely on your input to insure the
+                casinos listed here are both correct and on the level by leaving
+                your reviews.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -230,9 +255,11 @@ export default async function Review({ params }) {
       />
 
       <section className="flex flex-col mx-4 md:flex-row">
-        <div className="hidden md:w-1/4 md:flex md:flex-col md:">
-          <div className="md:flex md:flex-col" style={{position:"sticky", top:'140px'}}>
-
+        <div className="hidden lg:w-1/4 lg:flex lg:flex-col lg:">
+          <div
+            className="md:flex md:flex-col"
+            style={{ position: "sticky", top: "140px" }}
+          >
             <span className="text-lg font-medium p-4">ON THIS PAGE</span>
             <hr className="border-sky-700 dark:border-white w-60" />
             <span className="my-4 px-4 border-l-4 font-medium border-sky-700 dark:border-white">
@@ -351,10 +378,8 @@ export default async function Review({ params }) {
               className="text-lg font-normal"
               dangerouslySetInnerHTML={casinoReview}
             ></div>
-            
-            <Rating userId={user?.id} type={1} parent={casinoid} getRating={getRating} addRating={setRating} />
 
-            <Comment type={1} addComment={addComment} parent={casinoid} user={user} getComment={getComment} getCountComment={getCountComment}/>
+            <CommentList type={1} parent="aaa"/>
 
             <ProsCons data={prosCons} />
             <div className="text-lg font-normal">
@@ -364,7 +389,14 @@ export default async function Review({ params }) {
               <p id="LikeCasinos" className="my-4">
                 Casinos Like {data.casino}
               </p>
-            <LikeCasinos data={likeCasinoData} VscStarEmpty={<VscStarEmpty/>} BsFillStarFill={<BsFillStarFill/>} BsArrowRightCircleFill ={<BsArrowRightCircleFill className="mx-4" />} />
+              <LikeCasinos
+                data={likeCasinoData}
+                VscStarEmpty={<VscStarEmpty />}
+                BsFillStarFill={<BsFillStarFill />}
+                BsArrowRightCircleFill={
+                  <BsArrowRightCircleFill className="mx-4" />
+                }
+              />
             </div>
             <Faq data={faq} />
             <div className="text-lg font-normal">
@@ -380,6 +412,13 @@ export default async function Review({ params }) {
           </div>
         </div>
       </section>
+<<<<<<< HEAD
+
+=======
+      <section className="bg-white dark:bg-gray-900 py-8 lg:py-16">
+        <Comment type={1} parent="aaa" user="fda" />
+      </section>
+>>>>>>> 32431e16be1d8cf41c79bde5c381eb1bf31de681
     </div>
   );
 }

@@ -73,7 +73,6 @@ export async function Scratcher() {
                   {Array(9)
                     .fill(null)
                     .map((_, idx) => (
-                        // eslint-disable-next-line @next/next/no-img-element
                         <img key={idx}
                           className={`object-cover rounded-md 
                           ${
