@@ -1,5 +1,4 @@
 const CasinoText = ({data}) => {
-  console.log(data)
   return (
     <div >
       {data?.map((c, index) => (

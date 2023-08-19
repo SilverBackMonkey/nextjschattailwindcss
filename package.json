@@ -27,7 +27,6 @@
     "cheerio": "^1.0.0-rc.12",
     "classnames": "^2.3.2",
     "date-fns": "^2.30.0",
-    "emoji-mart": "^5.5.2",
     "js-cookie": "^3.0.5",
     "kysely": "^0.25.0",
     "mobile-detect": "^1.4.5",
@@ -51,7 +50,6 @@
     "rehype-parse": "^8.0.4",
     "rehype-react": "^7.2.0",
     "sharp": "^0.32.2",
-    "tw-elements": "^1.0.0-beta3",
     "ua-parser-js": "^1.0.35",
     "unified": "^10.1.2"
   },

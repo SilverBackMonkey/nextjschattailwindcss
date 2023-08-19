@@ -59,6 +59,6 @@ export const getLikeSlots = async (swId, pageNum) => {
             return data;
         }
       } catch (err) {
-        console.log("This is deposit area.." + err);
+        console.log(err);
       }
 }

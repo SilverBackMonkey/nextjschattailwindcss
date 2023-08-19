@@ -7,10 +7,11 @@ interface Props {
     setShow: (boolean) => void,
     children: any,
     type?: any,
-    submit?: () => void
+    submit?: () => void,
+    cancel?:() => void
 } 
 
-const Modal : React.FC<Props> = ({title, show, setShow, children, type, submit}) => {
+const Modal : React.FC<Props> = ({title, show, setShow, children, type, submit, cancel}) => {
   
   const submitButton = () =>{
     if(submit)
@@ -30,7 +31,7 @@ const Modal : React.FC<Props> = ({title, show, setShow, children, type, submit})
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
                 {title && <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                  <h6 className={classNames("text-3xl font-semibold",{"text-red-500": type=="warning"})}>
+                  <h6 className={classNames("text-3xl font-semibold text-gray-800")}>
                     {title}
                   </h6>
                   <button
@@ -48,14 +49,7 @@ const Modal : React.FC<Props> = ({title, show, setShow, children, type, submit})
                     {children}
                 </div>
                 {/*footer*/}
-                <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-                  <button
-                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={() => setShow(false)}
-                  >
-                    Close
-                  </button>
+                {(submit || cancel ) && <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
                   {submit && <button
                     className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
@@ -63,7 +57,14 @@ const Modal : React.FC<Props> = ({title, show, setShow, children, type, submit})
                   >
                     OK
                   </button>}
-                </div>
+                  {cancel && <button
+                    className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    onClick={submitButton}
+                  >
+                    Cancel
+                  </button>}
+                </div>}
               </div>
             </div>
           </div>

@@ -6,7 +6,6 @@ import { AnnotationIcon } from "../common/AnnotationIcon";
 const Comments = (comments) => {
   const commentsLoop = comments.comments;
  
-  //console.log(comments); update
   const style = {
     profileImage: "object-contain",
     profileImageContainer:
