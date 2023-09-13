@@ -3,8 +3,6 @@ import Footer from "../components/Footer";
 import "../styles/globals.css";
 import AuthContext from "./AuthContext";
 import Header from "./Header";
-import { isAuthenticated } from "./lib/RegistEmail";
-
 
 export const metadata = {
   title: "AllFreeChips",
@@ -16,22 +14,23 @@ export const metadata = {
 };
 
 export default function RootLayout({
-  children, 
+  children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-
   return (
     <html lang="en">
-      <body >
-      <div className="leading-normal tracking-normal text-white " style={{fontFamily: "'Source Sans Pro', sans-serif", background: "linear-gradient(90deg, #170893 0%, #b23eeb 100%)"}}>
-
-        <AuthContext>
-          <Header isAuthenticated={isAuthenticated}/>
-          {children}
-        </AuthContext>
-        <Footer />
+      <body>
+        <div className="bg-white text-sky-700 dark:bg-zinc-800 dark:text-white">
+          <AuthContext>
+            <Header />
+            <div className="content" id="afc-main">
+              {children}
+            </div>
+          </AuthContext>
+          <Footer />
         </div>
+        <Analytics />
       </body>
     </html>
   );

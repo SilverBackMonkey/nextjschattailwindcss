@@ -17,7 +17,7 @@ export default function CasinoContent({casino}) {
     const Homepage =
         "https://www.allfreechips.com/image/games/" + data.homepageimage;
     return (
-        <div className="border-2 rounded-xl flex flex-col md:flex-row items-center md:space-x-16 px-6 py-2 my-2 hover:shadow-3xl hover:-translate-x-6 duration-300" style={{background: "white"}}>
+        <div className="border-2 rounded-xl flex flex-col md:flex-row items-center md:space-x-16 px-6 py-2 my-2 hover:shadow-lg">
             <Link
                 rel="noreferrer"
                 target="_blank"
@@ -25,8 +25,7 @@ export default function CasinoContent({casino}) {
                 className="rounded-lg items-center"
                 >
                 <Image
-                    // src={Homepage}
-                    src="/test1.png"
+                    src={Homepage}
                     unoptimized
                     width={440}
                     height={300}
@@ -34,7 +33,7 @@ export default function CasinoContent({casino}) {
                     className="hover:scale-105 duration-300 rounded-xl"
                     />
             </Link>
-            <div className="flex flex-col w-full py-8 text-gray-700">
+            <div className="flex flex-col w-full py-8">
                 <div className="flex flex-col md:flex-row items-center">
                     <div className="text-3xl font-medium items-center w-full">
                     {data.casino}
@@ -53,7 +52,7 @@ export default function CasinoContent({casino}) {
                     </div>
                     <div className="flex space-x-4">
                         <span className="flex items-center">Review</span>
-                        <span className="h-9 w-9 rounded-full bg-primary-600 text-white dark:bg-zinc-800 dark:text-white">
+                        <span className="h-9 w-9 rounded-full bg-sky-700 text-white dark:bg-zinc-800 dark:text-white">
                             <AiOutlineExclamation className="relative top-2 left-2" />
                         </span>
                     </div>
@@ -85,12 +84,12 @@ export default function CasinoContent({casino}) {
                         <span className="text-2xl">$10</span>
                         <span className="text-sm font-light">Min. Deposit</span>
                     </div>
-                    <hr className=" w-10 h-1 rotate-90" />
+                    <hr className="border-sky-200 w-10 h-1 rotate-90" />
                     <div className="flex flex-col items-center">
                         <span className="text-2xl">{firstBonus?.playthrough}</span>
                         <span className="text-sm font-light">Playthrough</span>
                     </div>
-                    <hr className=" w-10 h-1 rotate-90" />
+                    <hr className="border-sky-200 w-10 h-1 rotate-90" />
                     <div className="flex flex-col items-center">
                         <span className="text-sm">Bonus</span>
                         <span className="text-sm">details</span>
@@ -102,7 +101,7 @@ export default function CasinoContent({casino}) {
                     target="_blank"
                     href={casinoLink}
                     type="button"
-                    className="bg-primary-600 text-white dark:text-white dark:bg-zinc-800 flex w-full justify-center rounded-lg items-center h-14"
+                    className="bg-sky-700 text-white dark:text-white dark:bg-zinc-800 flex w-full justify-center rounded-lg items-center h-14"
                     >
                     Claim Now
                     <BsArrowRightCircleFill className="mx-4" />

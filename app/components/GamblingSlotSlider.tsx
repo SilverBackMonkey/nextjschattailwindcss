@@ -48,8 +48,7 @@ const GamblingSlotSlider = ({ slots}) => {
                                     {item?.game_image && (
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img
-                                        // src={`https://www.allfreechips.com/image/sloticonssquare/${item?.game_image}`}
-                                        src="/test.png"
+                                        src={`/images/slot/${item?.game_image}`}
                                         alt={item?.casino}
                                     />
                                     )}
@@ -63,13 +62,13 @@ const GamblingSlotSlider = ({ slots}) => {
                                     <div className="relative">
                                         {item?.meta && item?.meta[0]?.title && (
                                         <h2
-                                            className="text-lg font-medium text-gray-800 md:text-lg"
+                                            className="text-base font-medium text-gray-800 md:text-lg"
                                         >
                                             {item?.meta[0]?.title}
                                         </h2>
                                         )}
                                         <p
-                                        className="mt-2 line-clamp-1 text-md text-gray-800"
+                                        className="mt-2 line-clamp-1 text-sm text-gray-800"
                                         >
                                         {item["game_name"]}
                                         </p>
